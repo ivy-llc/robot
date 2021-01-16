@@ -35,3 +35,7 @@ WORKDIR /ivy_robot
 COPY requirements.txt /ivy_robot
 RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     rm -rf requirements.txt
+
+COPY demos/requirements.txt /ivy_robot
+RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    rm -rf requirements.txt
