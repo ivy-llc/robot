@@ -1,0 +1,5 @@
+{
+    "ivy_robot.manipulator.": "ivy_robot.",
+    "ivy_robot.rigid_mobile.": "ivy_robot.",
+    "ivy_robot.splines.": "ivy_robot."
+}
