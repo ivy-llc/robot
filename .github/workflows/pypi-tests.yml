@@ -1,0 +1,26 @@
+name: pypi-tests
+on: [push]
+jobs:
+  run-pypi-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy Robot
+        uses: actions/checkout@v2
+        with:
+          path: ivy_robot
+          persist-credentials: false
+
+      - name: Install Dependencies
+        run: |
+          pip3 install --upgrade pip
+          pip3 install wheel setuptools pytest
+          pip3 install -r ivy_robot/requirements.txt
+          pip3 install -r ivy_robot/demos/requirements.txt
+          pip3 install jax jaxlib tensorflow tensorflow-addons torch mxnet
+          pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.7.0+cu102.html
+          pip3 install ivy-robot
+
+      - name: Run Tests
+        run: |
+          mv ivy_robot/ivy_robot_tests ivy_robot_tests
+          python3 -m pytest ivy_robot_tests/ --ignore ivy_robot_tests/test_demos.py

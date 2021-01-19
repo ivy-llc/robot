@@ -17,7 +17,7 @@ from distutils.core import setup
 import setuptools
 
 setup(name='ivy-robot',
-      version='0.0.0',
+      version='1.1.1',
       description='Functions and classes for gradient-based robot motion planning, written in Ivy.',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
