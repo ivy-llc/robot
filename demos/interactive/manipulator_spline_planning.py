@@ -8,6 +8,7 @@ import ivy_robot
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+from ivy.core.container import Container
 from ivy_robot.manipulator import MicoManipulator
 from ivy_demo_utils.ivy_scene.scene_utils import BaseSimulator
 from ivy_demo_utils.framework_utils import choose_random_framework, get_framework_from_str
@@ -182,12 +183,12 @@ def main(interactive=True, try_use_sim=True, f=None):
     clearance = 0
     while colliding:
         total_cost, grads, joint_query_vals, link_positions, sdf_vals = f.execute_with_gradients(
-            lambda xs: compute_cost_and_sdfs(xs[0], anchor_points, robot_start_config, robot_target_config,
-                                             query_points, sim, f), [learnable_anchor_vals])
+            lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, robot_start_config, robot_target_config,
+                                             query_points, sim, f), Container({'w': learnable_anchor_vals}))
         colliding = f.reduce_min(sdf_vals[2:]) < clearance
         sim.update_path_visualization(link_positions, sdf_vals,
                                       os.path.join(this_dir, 'msp_no_sim', 'path_{}.png'.format(it)))
-        learnable_anchor_vals = f.gradient_descent_update([learnable_anchor_vals], grads, lr)[0]
+        learnable_anchor_vals = f.gradient_descent_update(Container({'w': learnable_anchor_vals}), grads, lr)['w']
         it += 1
     sim.execute_motion(joint_query_vals)
     sim.close()

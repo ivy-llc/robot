@@ -1,5 +1,6 @@
 ivy-core
 ivy-mech
+ivy-vision
 ivy-robot
 ivy-demo-utils
 matplotlib
