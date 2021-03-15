@@ -127,13 +127,15 @@ Run Through
 
 We run through some of the different parts of the library via a simple ongoing example script.
 The full script is available in the demos_ folder, as file ``run_through.py``.
-First, we select a random backend framework ``f`` to use for the examples, from the options
-``ivy.jax``, ``ivy.tensorflow``, ``ivy.torch``, ``ivy.mxnd`` or ``ivy.numpy``.
+First, we select a random backend framework to use for the examples, from the options
+``ivy.jax``, ``ivy.tensorflow``, ``ivy.torch``, ``ivy.mxnd`` or ``ivy.numpy``,
+and use this to set the ivy backend framework.
 
 .. code-block:: python
 
+    import ivy
     from ivy_demo_utils.framework_utils import choose_random_framework
-    f = choose_random_framework()
+    ivy.set_framework(choose_random_framework())
 
 **Spline Planning**
 
@@ -147,41 +149,41 @@ However, for simplicitly we fix the z translation and 3DOF rotation to zeros in 
     # config
     num_free_anchors = 3
     num_samples = 100
-    constant_rot_vec = f.array([[0., 0., 0.]])
-    constant_z = f.array([[0.]])
+    constant_rot_vec = ivy.array([[0., 0., 0.]])
+    constant_z = ivy.array([[0.]])
 
     # xy positions
 
     # 1 x 2
-    start_xy = f.array([[0., 0.]])
-    target_xy = f.array([[1., 1.]])
+    start_xy = ivy.array([[0., 0.]])
+    target_xy = ivy.array([[1., 1.]])
 
     # 1 x 2
-    anchor1_xy = f.array([[0.6, 0.2]])
-    anchor2_xy = f.array([[0.5, 0.5]])
-    anchor3_xy = f.array([[0.4, 0.8]])
+    anchor1_xy = ivy.array([[0.6, 0.2]])
+    anchor2_xy = ivy.array([[0.5, 0.5]])
+    anchor3_xy = ivy.array([[0.4, 0.8]])
 
     # as 6DOF poses
 
     # 1 x 6
-    start_pose = f.concatenate((start_xy, constant_z, constant_rot_vec), -1)
-    anchor1_pose = f.concatenate((anchor1_xy, constant_z, constant_rot_vec), -1)
-    anchor2_pose = f.concatenate((anchor2_xy, constant_z, constant_rot_vec), -1)
-    anchor3_pose = f.concatenate((anchor3_xy, constant_z, constant_rot_vec), -1)
-    target_pose = f.concatenate((target_xy, constant_z, constant_rot_vec), -1)
+    start_pose = ivy.concatenate((start_xy, constant_z, constant_rot_vec), -1)
+    anchor1_pose = ivy.concatenate((anchor1_xy, constant_z, constant_rot_vec), -1)
+    anchor2_pose = ivy.concatenate((anchor2_xy, constant_z, constant_rot_vec), -1)
+    anchor3_pose = ivy.concatenate((anchor3_xy, constant_z, constant_rot_vec), -1)
+    target_pose = ivy.concatenate((target_xy, constant_z, constant_rot_vec), -1)
 
     num_anchors = num_free_anchors + 2
 
     # num_anchors x 6
-    anchor_poses = f.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
+    anchor_poses = ivy.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
 
     # uniform sampling for spline
 
     # num_anchors x 1
-    anchor_points = f.expand_dims(f.linspace(0., 1., num_anchors), -1)
+    anchor_points = ivy.expand_dims(ivy.linspace(0., 1., num_anchors), -1)
 
     # num_samples x 1
-    query_points = f.expand_dims(f.linspace(0., 1., num_samples), -1)
+    query_points = ivy.expand_dims(ivy.linspace(0., 1., num_samples), -1)
 
     # interpolated spline poses
 
@@ -219,7 +221,7 @@ but this time with a self-rotation of 180 degrees about the z-axis.
 .. code-block:: python
 
     # drone relative body points
-    rel_body_points = f.array([[0., 0., 0.],
+    rel_body_points = ivy.array([[0., 0., 0.],
                                [-0.1, -0.1, 0.],
                                [-0.1, 0.1, 0.],
                                [0.1, -0.1, 0.],
@@ -231,25 +233,25 @@ but this time with a self-rotation of 180 degrees about the z-axis.
     # rotatin vectors
 
     # 1 x 3
-    start_rot_vec = f.array([[0., 0., 0.]])
-    target_rot_vec = f.array([[0., 0., np.pi]])
+    start_rot_vec = ivy.array([[0., 0., 0.]])
+    target_rot_vec = ivy.array([[0., 0., np.pi]])
 
     # 1 x 3
-    anchor1_rot_vec = f.array([[0., 0., np.pi/4]])
-    anchor2_rot_vec = f.array([[0., 0., 2*np.pi/4]])
-    anchor3_rot_vec = f.array([[0., 0., 3*np.pi/4]])
+    anchor1_rot_vec = ivy.array([[0., 0., np.pi/4]])
+    anchor2_rot_vec = ivy.array([[0., 0., 2*np.pi/4]])
+    anchor3_rot_vec = ivy.array([[0., 0., 3*np.pi/4]])
 
     # as 6DOF poses
 
     # 1 x 6
-    start_pose = f.concatenate((start_xy, constant_z, start_rot_vec), -1)
-    anchor1_pose = f.concatenate((anchor1_xy, constant_z, anchor1_rot_vec), -1)
-    anchor2_pose = f.concatenate((anchor2_xy, constant_z, anchor2_rot_vec), -1)
-    anchor3_pose = f.concatenate((anchor3_xy, constant_z, anchor3_rot_vec), -1)
-    target_pose = f.concatenate((target_xy, constant_z, target_rot_vec), -1)
+    start_pose = ivy.concatenate((start_xy, constant_z, start_rot_vec), -1)
+    anchor1_pose = ivy.concatenate((anchor1_xy, constant_z, anchor1_rot_vec), -1)
+    anchor2_pose = ivy.concatenate((anchor2_xy, constant_z, anchor2_rot_vec), -1)
+    anchor3_pose = ivy.concatenate((anchor3_xy, constant_z, anchor3_rot_vec), -1)
+    target_pose = ivy.concatenate((target_xy, constant_z, target_rot_vec), -1)
 
     # num_anchors x 6
-    anchor_poses = f.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
+    anchor_poses = ivy.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
 
     # interpolated spline poses
 
@@ -301,12 +303,12 @@ a forward reaching motion in the positive x direction.
     class SimpleManipulator(Manipulator):
 
         def __init__(self, f, base_inv_ext_mat=None):
-            self._f = f
-            a_s = f.array([0.5, 0.5])
-            d_s = f.array([0., 0.])
-            alpha_s = f.array([0., 0.])
-            dh_joint_scales = f.ones((2,))
-            dh_joint_offsets = f.array([-np.pi/2, 0.])
+            selivy._f = f
+            a_s = ivy.array([0.5, 0.5])
+            d_s = ivy.array([0., 0.])
+            alpha_s = ivy.array([0., 0.])
+            dh_joint_scales = ivy.ones((2,))
+            dh_joint_offsets = ivy.array([-np.pi/2, 0.])
             super().__init__(a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat, f)
 
     # create manipulator as ivy manipulator
@@ -315,16 +317,16 @@ a forward reaching motion in the positive x direction.
     # joint angles
 
     # 1 x 2
-    start_joint_angles = f.array([[0., 0.]])
-    target_joint_angles = f.array([[-np.pi/4, -np.pi/4]])
+    start_joint_angles = ivy.array([[0., 0.]])
+    target_joint_angles = ivy.array([[-np.pi/4, -np.pi/4]])
 
     # 1 x 2
-    anchor1_joint_angles = -f.array([[0.2, 0.6]])*np.pi/4
-    anchor2_joint_angles = -f.array([[0.5, 0.5]])*np.pi/4
-    anchor3_joint_angles = -f.array([[0.8, 0.4]])*np.pi/4
+    anchor1_joint_angles = -ivy.array([[0.2, 0.6]])*np.pi/4
+    anchor2_joint_angles = -ivy.array([[0.5, 0.5]])*np.pi/4
+    anchor3_joint_angles = -ivy.array([[0.8, 0.4]])*np.pi/4
 
     # num_anchors x 2
-    anchor_joint_angles = f.concatenate(
+    anchor_joint_angles = ivy.concatenate(
         (start_joint_angles, anchor1_joint_angles, anchor2_joint_angles, anchor3_joint_angles,
          target_joint_angles), 0)
 
