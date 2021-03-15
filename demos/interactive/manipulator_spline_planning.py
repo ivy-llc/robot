@@ -11,14 +11,15 @@ import matplotlib.image as mpimg
 from ivy.core.container import Container
 from ivy_robot.manipulator import MicoManipulator
 from ivy_demo_utils.ivy_scene.scene_utils import BaseSimulator
+from ivy.framework_handler import set_framework, unset_framework
 from ivy_demo_utils.framework_utils import choose_random_framework, get_framework_from_str
 
 
 # noinspection PyProtectedMember
 class Simulator(BaseSimulator):
 
-    def __init__(self, interactive, try_use_sim, f):
-        super().__init__(interactive, try_use_sim, f)
+    def __init__(self, interactive, try_use_sim):
+        super().__init__(interactive, try_use_sim)
 
         # initialize scene
         if self.with_pyrep:
@@ -32,16 +33,16 @@ class Simulator(BaseSimulator):
             self._robot._ik_target.set_position(np.array([0, 0, -1]))
             self._robot.get_tip().set_parent(self._robot._ik_target)
             self._robot.get_tip().set_position(np.array([0, 0, -1]))
-            robot_start_config = f.array([100., 100., 240., 180., 180., 120.])*np.pi/180
+            robot_start_config = ivy.array([100., 100., 240., 180., 180., 120.])*np.pi/180
             [j.set_joint_position(p, False) for j, p in
-             zip(self._robot.joints, f.to_numpy(robot_start_config).tolist())]
-            robot_target_config = f.array([260., 100., 220., 0., 180., 45.])*np.pi/180
+             zip(self._robot.joints, ivy.to_numpy(robot_start_config).tolist())]
+            robot_target_config = ivy.array([260., 100., 220., 0., 180., 45.])*np.pi/180
             self._robot_target.set_position(np.array([0.85003, -0.024983, 0.77837]))
             self._robot_target._ik_target.set_position(np.array([0, 0, -1]))
             self._robot_target.get_tip().set_parent(self._robot_target._ik_target)
             self._robot_target.get_tip().set_position(np.array([0, 0, -1]))
             [j.set_joint_position(p, False) for j, p in
-             zip(self._robot_target.joints, f.to_numpy(robot_target_config).tolist())]
+             zip(self._robot_target.joints, ivy.to_numpy(robot_target_config).tolist())]
             self._default_camera.set_position(np.array([0.094016, -1.2767, 1.7308]))
             self._default_camera.set_orientation(np.array([i*np.pi/180 for i in [-121.32, 27.760, -164.18]]))
 
@@ -64,15 +65,15 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene()
 
             # robot configs
-            robot_start_config = f.array(self._robot.get_joint_positions(), 'float32')
-            robot_target_config = f.array(self._robot_target.get_joint_positions(), 'float32')
+            robot_start_config = ivy.array(self._robot.get_joint_positions(), 'float32')
+            robot_target_config = ivy.array(self._robot_target.get_joint_positions(), 'float32')
 
             # ivy robot
-            self._ivy_manipulator = MicoManipulator(f, ivy_mech.make_transformation_homogeneous(
-                f.reshape(f.array(self._robot_base.get_matrix()), (3, 4))))
+            self._ivy_manipulator = MicoManipulator(ivy_mech.make_transformation_homogeneous(
+                ivy.reshape(ivy.array(self._robot_base.get_matrix()), (3, 4))))
 
             # spline path
-            interpolated_joint_path = f.transpose(f.linspace(robot_start_config, robot_target_config, 100), (1, 0))
+            interpolated_joint_path = ivy.transpose(ivy.linspace(robot_start_config, robot_target_config, 100), (1, 0))
             multi_spline_points = self._f.transpose(self._ivy_manipulator.sample_links(interpolated_joint_path), (1, 0, 2))
             multi_spline_sdf_vals = self._f.reshape(self.sdf(self._f.reshape(multi_spline_points, (-1, 3))), (-1, 100, 1))
             self.update_path_visualization(multi_spline_points, multi_spline_sdf_vals, None)
@@ -94,12 +95,12 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene_no_sim(box_pos=np.array([0.55, 0, 0.9]))
 
             # ivy robot
-            base_inv_ext_mat = f.array([[1, 0, 0, 0.84999895],
-                                        [0, 1, 0, -0.02500308],
-                                        [0, 0, 1, 0.70000124]])
-            self.ivy_manipulator = MicoManipulator(f, ivy_mech.make_transformation_homogeneous(base_inv_ext_mat))
-            self.robot_start_config = f.array([100., 100., 240., 180., 180., 120.])*np.pi/180
-            self.robot_target_config = f.array([260., 100., 220., 0., 180., 45.])*np.pi/180
+            base_inv_ext_mat = ivy.array([[1, 0, 0, 0.84999895],
+                                          [0, 1, 0, -0.02500308],
+                                          [0, 0, 1, 0.70000124]])
+            self.ivy_manipulator = MicoManipulator(ivy_mech.make_transformation_homogeneous(base_inv_ext_mat))
+            self.robot_start_config = ivy.array([100., 100., 240., 180., 180., 120.])*np.pi/180
+            self.robot_target_config = ivy.array([260., 100., 220., 0., 180., 45.])*np.pi/180
 
             # message
             print('\nInitialized dummy scene with a robot and a target robot configuration to reach.'
@@ -136,25 +137,24 @@ class Simulator(BaseSimulator):
 
 # Cost Function
 
-def compute_length(query_vals, f):
+def compute_length(query_vals):
     start_vals = query_vals[:, 0:-1]
     end_vals = query_vals[:, 1:]
-    dists_sqrd = f.maximum((end_vals - start_vals)**2, 1e-12)
-    distances = f.reduce_sum(dists_sqrd, -1)**0.5
-    return f.reduce_mean(f.reduce_sum(distances, 1))
+    dists_sqrd = ivy.maximum((end_vals - start_vals)**2, 1e-12)
+    distances = ivy.reduce_sum(dists_sqrd, -1)**0.5
+    return ivy.reduce_mean(ivy.reduce_sum(distances, 1))
 
 
-def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val, end_anchor_val, query_points, sim, f):
-    anchor_vals = f.concatenate((f.expand_dims(start_anchor_val, 0),
-                                 learnable_anchor_vals,
-                                 f.expand_dims(end_anchor_val, 0)), 0)
+def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val, end_anchor_val, query_points, sim):
+    anchor_vals = ivy.concatenate((ivy.expand_dims(start_anchor_val, 0),
+                                   learnable_anchor_vals, ivy.expand_dims(end_anchor_val, 0)), 0)
     joint_angles = ivy_robot.sample_spline_path(anchor_points, anchor_vals, query_points)
-    link_positions = f.transpose(sim.ivy_manipulator.sample_links(joint_angles), (1, 0, 2))
-    length_cost = compute_length(link_positions, f)
-    sdf_vals = sim.sdf(f.reshape(link_positions, (-1, 3)))
-    coll_cost = -f.reduce_mean(sdf_vals)
+    link_positions = ivy.transpose(sim.ivy_manipulator.sample_links(joint_angles), (1, 0, 2))
+    length_cost = compute_length(link_positions)
+    sdf_vals = sim.sdf(ivy.reshape(link_positions, (-1, 3)))
+    coll_cost = -ivy.reduce_mean(sdf_vals)
     total_cost = length_cost + coll_cost*10
-    return total_cost, joint_angles, link_positions, f.reshape(sdf_vals, (-1, 100, 1))
+    return total_cost[0], joint_angles, link_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
 
 
 def main(interactive=True, try_use_sim=True, f=None):
@@ -162,36 +162,39 @@ def main(interactive=True, try_use_sim=True, f=None):
     # config
     this_dir = os.path.dirname(os.path.realpath(__file__))
     f = choose_random_framework(excluded=['numpy']) if f is None else f
-    sim = Simulator(interactive, try_use_sim, f)
+    set_framework(f)
+    sim = Simulator(interactive, try_use_sim)
     lr = 0.5
     num_anchors = 3
     num_sample_points = 100
 
     # spline start
-    anchor_points = f.cast(f.expand_dims(f.linspace(0, 1, 2 + num_anchors), -1), 'float32')
-    query_points = f.cast(f.expand_dims(f.linspace(0, 1, num_sample_points), -1), 'float32')
+    anchor_points = ivy.cast(ivy.expand_dims(ivy.linspace(0, 1, 2 + num_anchors), -1), 'float32')
+    query_points = ivy.cast(ivy.expand_dims(ivy.linspace(0, 1, num_sample_points), -1), 'float32')
 
     # learnable parameters
-    robot_start_config = f.array(f.cast(sim.robot_start_config, 'float32'))
-    robot_target_config = f.array(f.cast(sim.robot_target_config, 'float32'))
-    learnable_anchor_vals = f.variable(f.cast(f.transpose(f.linspace(
+    robot_start_config = ivy.array(ivy.cast(sim.robot_start_config, 'float32'))
+    robot_target_config = ivy.array(ivy.cast(sim.robot_target_config, 'float32'))
+    learnable_anchor_vals = ivy.variable(ivy.cast(ivy.transpose(ivy.linspace(
         robot_start_config, robot_target_config, 2 + num_anchors)[..., 1:-1], (1, 0)), 'float32'))
 
     # optimize
     it = 0
     colliding = True
     clearance = 0
+    joint_query_vals = None
     while colliding:
-        total_cost, grads, joint_query_vals, link_positions, sdf_vals = f.execute_with_gradients(
+        total_cost, grads, joint_query_vals, link_positions, sdf_vals = ivy.execute_with_gradients(
             lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, robot_start_config, robot_target_config,
-                                             query_points, sim, f), Container({'w': learnable_anchor_vals}))
-        colliding = f.reduce_min(sdf_vals[2:]) < clearance
+                                             query_points, sim), Container({'w': learnable_anchor_vals}))
+        colliding = ivy.reduce_min(sdf_vals[2:]) < clearance
         sim.update_path_visualization(link_positions, sdf_vals,
                                       os.path.join(this_dir, 'msp_no_sim', 'path_{}.png'.format(it)))
-        learnable_anchor_vals = f.gradient_descent_update(Container({'w': learnable_anchor_vals}), grads, lr)['w']
+        learnable_anchor_vals = ivy.gradient_descent_update(Container({'w': learnable_anchor_vals}), grads, lr)['w']
         it += 1
     sim.execute_motion(joint_query_vals)
     sim.close()
+    unset_framework()
 
 
 if __name__ == '__main__':

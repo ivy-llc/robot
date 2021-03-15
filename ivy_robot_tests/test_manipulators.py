@@ -3,11 +3,11 @@ Collection of tests for mico robot manipulator
 """
 
 # global
+import pytest
 import numpy as np
+import ivy_tests.helpers as helpers
 
 # local
-import ivy
-import ivy_robot_tests.helpers as helpers
 from ivy_robot.manipulator import MicoManipulator
 
 
@@ -84,25 +84,20 @@ class MicoTestData:
 td = MicoTestData()
 
 
-def test_compute_mico_link_matrices():
-    for lib, call in helpers.calls:
-        if call is helpers.mx_graph_call:
-            # mxnet symbolic does not fully support array slicing
-            continue
-        mico = MicoManipulator(lib)
-        assert np.allclose(call(mico.compute_link_matrices, td.joint_angles, 6),
-                           td.true_link_matrices, rtol=1e-03, atol=1e-03)
-        assert np.allclose(call(mico.compute_link_matrices, ivy.tile(ivy.expand_dims(td.joint_angles, 0), (5, 1)), 6),
-                           ivy.tile(ivy.expand_dims(td.true_link_matrices, 0), (5, 1, 1, 1)), rtol=1e-03, atol=1e-03)
+def test_compute_mico_link_matrices(dev_str, call):
+    mico = MicoManipulator()
+    assert np.allclose(call(mico.compute_link_matrices, td.joint_angles, 6),
+                       td.true_link_matrices, rtol=1e-03, atol=1e-03)
+    assert np.allclose(call(mico.compute_link_matrices, np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
+                       np.tile(np.expand_dims(td.true_link_matrices, 0), (5, 1, 1, 1)), rtol=1e-03, atol=1e-03)
 
 
-def test_sample_mico_links():
-    for lib, call in helpers.calls:
-        if call in [helpers.tf_graph_call, helpers.mx_graph_call]:
-            # the need to dynamically infer array shapes makes this only valid in eager mode currently
-            continue
-        mico = MicoManipulator(lib)
-        assert np.allclose(call(mico.sample_links, td.joint_angles, 6),
-                           td.sampled_link, atol=1e-6)
-        assert np.allclose(call(mico.sample_links, ivy.tile(ivy.expand_dims(td.joint_angles, 0), (5, 1)), 6),
-                           ivy.tile(ivy.expand_dims(td.sampled_link, 0), (5, 1, 1, 1)), atol=1e-6)
+def test_sample_mico_links(dev_str, call):
+    if call in [helpers.tf_graph_call]:
+        # the need to dynamically infer array shapes makes this only valid in eager mode currently
+        pytest.skip()
+    mico = MicoManipulator()
+    assert np.allclose(call(mico.sample_links, td.joint_angles, 6),
+                       td.sampled_link, atol=1e-6)
+    assert np.allclose(call(mico.sample_links, np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
+                       np.tile(np.expand_dims(td.sampled_link, 0), (5, 1, 1, 1)), atol=1e-6)

@@ -7,7 +7,6 @@ import numpy as np
 
 # local
 import ivy_robot
-import ivy_robot_tests.helpers as helpers
 
 
 class SplineTestData:
@@ -27,11 +26,7 @@ class SplineTestData:
 td = SplineTestData()
 
 
-def test_spline_interpolation():
-    for lib, call in helpers.calls:
-        if call is helpers.mx_graph_call:
-            # mxnet symbolic does not fully support array slicing
-            continue
-        assert np.allclose(
-            call(ivy_robot.planning.sample_spline_path, td.train_points_3d, td.train_values_3d,
-                 td.query_points_3d, f=lib), td.query_values_3d, atol=1e-2)
+def test_spline_interpolation(dev_str, call):
+    assert np.allclose(
+        call(ivy_robot.planning.sample_spline_path, td.train_points_3d, td.train_values_3d,
+             td.query_points_3d), td.query_values_3d, atol=1e-2)

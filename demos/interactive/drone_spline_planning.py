@@ -1,5 +1,6 @@
 # global
 import os
+import ivy
 import time
 import argparse
 import ivy_mech
@@ -10,21 +11,22 @@ import matplotlib.image as mpimg
 from ivy.core.container import Container
 from ivy_robot.rigid_mobile import RigidMobile
 from ivy_demo_utils.ivy_scene.scene_utils import BaseSimulator
+from ivy.framework_handler import set_framework, unset_framework
 from ivy_demo_utils.framework_utils import choose_random_framework, get_framework_from_str
 
 
 class Simulator(BaseSimulator):
 
-    def __init__(self, interactive, try_use_sim, f):
-        super().__init__(interactive, try_use_sim, f)
+    def __init__(self, interactive, try_use_sim):
+        super().__init__(interactive, try_use_sim)
 
         # ivy robot
-        rel_body_points = f.array([[0., 0., 0.],
-                                   [-0.15, -0.15, 0.],
-                                   [-0.15, 0.15, 0.],
-                                   [0.15, -0.15, 0.],
-                                   [0.15, 0.15, 0.]])
-        self.ivy_drone = RigidMobile(rel_body_points, f)
+        rel_body_points = ivy.array([[0., 0., 0.],
+                                     [-0.15, -0.15, 0.],
+                                     [-0.15, 0.15, 0.],
+                                     [0.15, -0.15, 0.],
+                                     [0.15, 0.15, 0.]])
+        self.ivy_drone = RigidMobile(rel_body_points)
 
         # initialize scene
         if self.with_pyrep:
@@ -57,20 +59,20 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene()
 
             # public objects
-            drone_starting_inv_ext_mat = f.array(np.reshape(self._drone.get_matrix(), (3, 4)), 'float32')
-            drone_start_rot_vec_pose = ivy_mech.mat_pose_to_rot_vec_pose(drone_starting_inv_ext_mat, f=f)
+            drone_starting_inv_ext_mat = ivy.array(np.reshape(self._drone.get_matrix(), (3, 4)), 'float32')
+            drone_start_rot_vec_pose = ivy_mech.mat_pose_to_rot_vec_pose(drone_starting_inv_ext_mat)
             self.drone_start_pose = drone_start_rot_vec_pose
-            target_inv_ext_mat = f.array(np.reshape(self._target.get_matrix(), (3, 4)), 'float32')
-            target_rot_vec_pose = ivy_mech.mat_pose_to_rot_vec_pose(target_inv_ext_mat, f=f)
+            target_inv_ext_mat = ivy.array(np.reshape(self._target.get_matrix(), (3, 4)), 'float32')
+            target_rot_vec_pose = ivy_mech.mat_pose_to_rot_vec_pose(target_inv_ext_mat)
             self.drone_target_pose = target_rot_vec_pose
 
             # spline path
-            drone_start_to_target_poses = f.transpose(f.linspace(
+            drone_start_to_target_poses = ivy.transpose(ivy.linspace(
                 self.drone_start_pose, self.drone_target_pose, 100), (1, 0))
-            drone_start_to_target_inv_ext_mats = ivy_mech.rot_vec_pose_to_mat_pose(drone_start_to_target_poses, f=f)
+            drone_start_to_target_inv_ext_mats = ivy_mech.rot_vec_pose_to_mat_pose(drone_start_to_target_poses)
             drone_start_to_target_positions =\
-                f.transpose(self.ivy_drone.sample_body(drone_start_to_target_inv_ext_mats), (1, 0, 2))
-            initil_sdf_vals = f.reshape(self.sdf(f.reshape(f.cast(
+                ivy.transpose(self.ivy_drone.sample_body(drone_start_to_target_inv_ext_mats), (1, 0, 2))
+            initil_sdf_vals = ivy.reshape(self.sdf(ivy.reshape(ivy.cast(
                 drone_start_to_target_positions, 'float32'), (-1, 3))), (-1, 100, 1))
             self.update_path_visualization(drone_start_to_target_positions, initil_sdf_vals, None)
 
@@ -86,8 +88,8 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene_no_sim()
 
             # public objects
-            self.drone_start_pose = f.array([-1.1500, -1.0280,  0.6000,  0.0000,  0.0000,  0.6981])
-            self.drone_target_pose = f.array([1.0250, 1.1250, 0.6000, 0.0000, 0.0000, 0.6981])
+            self.drone_start_pose = ivy.array([-1.1500, -1.0280,  0.6000,  0.0000,  0.0000,  0.6981])
+            self.drone_target_pose = ivy.array([1.0250, 1.1250, 0.6000, 0.0000, 0.0000, 0.6981])
 
             # message
             print('\nInitialized dummy scene with a drone and a target position to reach.'
@@ -125,26 +127,25 @@ class Simulator(BaseSimulator):
 
 # Cost Function
 
-def compute_length(query_vals, f):
+def compute_length(query_vals):
     start_vals = query_vals[0:-1]
     end_vals = query_vals[1:]
-    dists_sqrd = f.maximum((end_vals - start_vals)**2, 1e-12)
-    distances = f.reduce_sum(dists_sqrd, -1)**0.5
-    return f.reduce_sum(distances)
+    dists_sqrd = ivy.maximum((end_vals - start_vals)**2, 1e-12)
+    distances = ivy.reduce_sum(dists_sqrd, -1)**0.5
+    return ivy.reduce_sum(distances)
 
 
-def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val, end_anchor_val, query_points, sim, f):
-    anchor_vals = f.concatenate((f.expand_dims(start_anchor_val, 0),
-                                 learnable_anchor_vals,
-                                 f.expand_dims(end_anchor_val, 0)), 0)
+def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val, end_anchor_val, query_points, sim):
+    anchor_vals = ivy.concatenate((ivy.expand_dims(start_anchor_val, 0), learnable_anchor_vals,
+                                   ivy.expand_dims(end_anchor_val, 0)), 0)
     poses = ivy_robot.sample_spline_path(anchor_points, anchor_vals, query_points)
-    inv_ext_mat_query_vals = ivy_mech.rot_vec_pose_to_mat_pose(poses, f=f)
-    body_positions = f.transpose(sim.ivy_drone.sample_body(inv_ext_mat_query_vals), (1, 0, 2))
-    length_cost = compute_length(body_positions, f)
-    sdf_vals = sim.sdf(f.reshape(body_positions, (-1, 3)))
-    coll_cost = -f.reduce_mean(sdf_vals)
+    inv_ext_mat_query_vals = ivy_mech.rot_vec_pose_to_mat_pose(poses)
+    body_positions = ivy.transpose(sim.ivy_drone.sample_body(inv_ext_mat_query_vals), (1, 0, 2))
+    length_cost = compute_length(body_positions)
+    sdf_vals = sim.sdf(ivy.reshape(body_positions, (-1, 3)))
+    coll_cost = -ivy.reduce_mean(sdf_vals)
     total_cost = length_cost + coll_cost * 10
-    return total_cost, poses, body_positions, f.reshape(sdf_vals, (-1, 100, 1))
+    return total_cost[0], poses, body_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
 
 
 def main(interactive=True, try_use_sim=True, f=None):
@@ -152,36 +153,39 @@ def main(interactive=True, try_use_sim=True, f=None):
     # config
     this_dir = os.path.dirname(os.path.realpath(__file__))
     f = choose_random_framework(excluded=['numpy']) if f is None else f
-    sim = Simulator(interactive, try_use_sim, f)
+    set_framework(f)
+    sim = Simulator(interactive, try_use_sim)
     lr = 0.01
     num_anchors = 3
     num_sample_points = 100
 
     # 1D spline points
-    anchor_points = f.cast(f.expand_dims(f.linspace(0, 1, 2 + num_anchors), -1), 'float32')
-    query_points = f.cast(f.expand_dims(f.linspace(0, 1, num_sample_points), -1), 'float32')
+    anchor_points = ivy.cast(ivy.expand_dims(ivy.linspace(0, 1, 2 + num_anchors), -1), 'float32')
+    query_points = ivy.cast(ivy.expand_dims(ivy.linspace(0, 1, num_sample_points), -1), 'float32')
 
     # learnable parameters
-    drone_start_pose = f.cast(f.array(sim.drone_start_pose), 'float32')
-    target_pose = f.cast(f.array(sim.drone_target_pose), 'float32')
-    learnable_anchor_vals = f.variable(f.cast(f.transpose(f.linspace(
+    drone_start_pose = ivy.cast(ivy.array(sim.drone_start_pose), 'float32')
+    target_pose = ivy.cast(ivy.array(sim.drone_target_pose), 'float32')
+    learnable_anchor_vals = ivy.variable(ivy.cast(ivy.transpose(ivy.linspace(
         drone_start_pose, target_pose, 2 + num_anchors)[..., 1:-1], (1, 0)), 'float32'))
 
     # optimize
     it = 0
     colliding = True
     clearance = 0.1
+    poses = None
     while colliding:
-        total_cost, grads, poses, body_positions, sdf_vals = f.execute_with_gradients(
-            lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, drone_start_pose, target_pose, query_points, sim, f),
+        total_cost, grads, poses, body_positions, sdf_vals = ivy.execute_with_gradients(
+            lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, drone_start_pose, target_pose, query_points, sim),
             Container({'w': learnable_anchor_vals}))
-        colliding = f.reduce_min(sdf_vals) < clearance
+        colliding = ivy.reduce_min(sdf_vals) < clearance
         sim.update_path_visualization(body_positions, sdf_vals,
                                       os.path.join(this_dir, 'dsp_no_sim', 'path_{}.png'.format(it)))
-        learnable_anchor_vals = f.gradient_descent_update(Container({'w': learnable_anchor_vals}), grads, lr)['w']
+        learnable_anchor_vals = ivy.gradient_descent_update(Container({'w': learnable_anchor_vals}), grads, lr)['w']
         it += 1
     sim.execute_motion(poses)
     sim.close()
+    unset_framework()
 
 
 if __name__ == '__main__':

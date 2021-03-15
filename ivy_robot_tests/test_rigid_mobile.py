@@ -3,12 +3,11 @@ Collection of tests for mico robot manipulator
 """
 
 # global
+import ivy
 import ivy_mech
 import numpy as np
 
 # local
-import ivy
-import ivy_robot_tests.helpers as helpers
 from ivy_robot.rigid_mobile import RigidMobile
 
 
@@ -32,13 +31,9 @@ class RigidMobileTestData:
 td = RigidMobileTestData()
 
 
-def test_sample_body():
-    for lib, call in helpers.calls:
-        if call is helpers.mx_graph_call:
-            # mxnet symbolic does not fully support array slicing
-            continue
-        mico = RigidMobile(lib.array(td.rel_body_points, 'float32'), lib)
-        assert np.allclose(call(mico.sample_body, td.inv_ext_mat),
-                           td.sampled_body, atol=1e-6)
-        assert np.allclose(call(mico.sample_body, ivy.tile(ivy.expand_dims(td.inv_ext_mat, 0), (5, 1, 1))),
-                           ivy.tile(ivy.expand_dims(td.sampled_body, 0), (5, 1, 1)), atol=1e-6)
+def test_sample_body(dev_str, call):
+    mico = RigidMobile(ivy.array(td.rel_body_points, 'float32'))
+    assert np.allclose(call(mico.sample_body, td.inv_ext_mat),
+                       td.sampled_body, atol=1e-6)
+    assert np.allclose(call(mico.sample_body, np.tile(np.expand_dims(td.inv_ext_mat, 0), (5, 1, 1))),
+                       np.tile(np.expand_dims(td.sampled_body, 0), (5, 1, 1)), atol=1e-6)

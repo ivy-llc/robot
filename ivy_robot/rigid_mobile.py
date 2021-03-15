@@ -4,27 +4,24 @@ Rigid Mobile class, containing functions for sampling rigid mobile robots
 
 # global
 import ivy_mech
-from ivy.framework_handler import get_framework as _get_framework
+import ivy as _ivy
 
 MIN_DENOMINATOR = 1e-12
 
 
 class RigidMobile:
 
-    def __init__(self, rel_body_points, f=None):
+    def __init__(self, rel_body_points):
         """
         Initialize rigid mobile robot instance
 
         :param rel_body_points: Relative body points *[num_body_points,3]*
         :type rel_body_points: array
-        :param f: Machine learning framework. Inferred from inputs if None.
-        :type f: ml_framework, optional
         """
-        self._f = _get_framework(rel_body_points, f=f)
 
         # 4 x NBP
         self._rel_body_points_homo_trans =\
-            f.swapaxes(ivy_mech.make_coordinates_homogeneous(rel_body_points), 0, 1)
+            _ivy.swapaxes(ivy_mech.make_coordinates_homogeneous(rel_body_points), 0, 1)
 
     # Public Methods #
     # ---------------#
@@ -47,7 +44,7 @@ class RigidMobile:
         batch_shape = list(batch_shape)
 
         # (BSx3) x NBP
-        body_points_trans = self._f.matmul(self._f.reshape(inv_ext_mats, (-1, 4)), self._rel_body_points_homo_trans)
+        body_points_trans = _ivy.matmul(_ivy.reshape(inv_ext_mats, (-1, 4)), self._rel_body_points_homo_trans)
 
         # BS x NBP x 3
-        return self._f.swapaxes(self._f.reshape(body_points_trans, batch_shape + [3, -1]), -1, -2)
+        return _ivy.swapaxes(_ivy.reshape(body_points_trans, batch_shape + [3, -1]), -1, -2)
