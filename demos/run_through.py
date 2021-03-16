@@ -234,7 +234,7 @@ def main(interactive=True, f=None):
     class SimpleManipulator(Manipulator):
 
         # noinspection PyShadowingNames
-        def __init__(self, f, base_inv_ext_mat=None):
+        def __init__(self, base_inv_ext_mat=None):
             a_s = ivy.array([0.5, 0.5])
             d_s = ivy.array([0., 0.])
             alpha_s = ivy.array([0., 0.])
@@ -243,7 +243,7 @@ def main(interactive=True, f=None):
             super().__init__(a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat)
 
     # create manipulator as ivy manipulator
-    manipulator = SimpleManipulator(f=f)
+    manipulator = SimpleManipulator()
 
     # joint angles
 

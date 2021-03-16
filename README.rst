@@ -228,7 +228,7 @@ but this time with a self-rotation of 180 degrees about the z-axis.
                                [0.1, 0.1, 0.]])
 
     # create drone as ivy rigid mobile robot
-    drone = RigidMobile(rel_body_points, f=f)
+    drone = RigidMobile(rel_body_points)
 
     # rotatin vectors
 
@@ -261,10 +261,10 @@ but this time with a self-rotation of 180 degrees about the z-axis.
     # as matrices
 
     # num_anchors x 3 x 4
-    anchor_matrices = ivy_mech.rot_vec_pose_to_mat_pose(anchor_poses, f=f)
+    anchor_matrices = ivy_mech.rot_vec_pose_to_mat_pose(anchor_poses)
 
     # num_samples x 3 x 4
-    interpolated_matrices = ivy_mech.rot_vec_pose_to_mat_pose(interpolated_poses, f=f)
+    interpolated_matrices = ivy_mech.rot_vec_pose_to_mat_pose(interpolated_poses)
 
     # sample drone body
 
@@ -302,17 +302,16 @@ a forward reaching motion in the positive x direction.
 
     class SimpleManipulator(Manipulator):
 
-        def __init__(self, f, base_inv_ext_mat=None):
-            selivy._f = f
+        def __init__(self, base_inv_ext_mat=None):
             a_s = ivy.array([0.5, 0.5])
             d_s = ivy.array([0., 0.])
             alpha_s = ivy.array([0., 0.])
             dh_joint_scales = ivy.ones((2,))
             dh_joint_offsets = ivy.array([-np.pi/2, 0.])
-            super().__init__(a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat, f)
+            super().__init__(a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat)
 
     # create manipulator as ivy manipulator
-    manipulator = SimpleManipulator(f=f)
+    manipulator = SimpleManipulator()
 
     # joint angles
 
