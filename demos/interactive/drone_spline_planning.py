@@ -169,6 +169,9 @@ def main(interactive=True, try_use_sim=True, f=None):
     learnable_anchor_vals = ivy.variable(ivy.cast(ivy.transpose(ivy.linspace(
         drone_start_pose, target_pose, 2 + num_anchors)[..., 1:-1], (1, 0)), 'float32'))
 
+    # optimizer
+    optimizer = ivy.SGD(lr=lr)
+
     # optimize
     it = 0
     colliding = True
@@ -181,7 +184,7 @@ def main(interactive=True, try_use_sim=True, f=None):
         colliding = ivy.reduce_min(sdf_vals) < clearance
         sim.update_path_visualization(body_positions, sdf_vals,
                                       os.path.join(this_dir, 'dsp_no_sim', 'path_{}.png'.format(it)))
-        learnable_anchor_vals = ivy.gradient_descent_update(Container({'w': learnable_anchor_vals}), grads, lr)['w']
+        learnable_anchor_vals = optimizer.step(Container({'w': learnable_anchor_vals}), grads)['w']
         it += 1
     sim.execute_motion(poses)
     sim.close()
