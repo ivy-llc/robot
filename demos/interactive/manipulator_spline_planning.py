@@ -74,8 +74,8 @@ class Simulator(BaseSimulator):
 
             # spline path
             interpolated_joint_path = ivy.transpose(ivy.linspace(robot_start_config, robot_target_config, 100), (1, 0))
-            multi_spline_points = self._f.transpose(self._ivy_manipulator.sample_links(interpolated_joint_path), (1, 0, 2))
-            multi_spline_sdf_vals = self._f.reshape(self.sdf(self._f.reshape(multi_spline_points, (-1, 3))), (-1, 100, 1))
+            multi_spline_points = ivy.transpose(self._ivy_manipulator.sample_links(interpolated_joint_path), (1, 0, 2))
+            multi_spline_sdf_vals = ivy.reshape(self.sdf(ivy.reshape(multi_spline_points, (-1, 3))), (-1, 100, 1))
             self.update_path_visualization(multi_spline_points, multi_spline_sdf_vals, None)
 
             # public objects

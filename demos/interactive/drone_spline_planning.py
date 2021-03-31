@@ -22,10 +22,10 @@ class Simulator(BaseSimulator):
 
         # ivy robot
         rel_body_points = ivy.array([[0., 0., 0.],
-                                     [-0.15, -0.15, 0.],
-                                     [-0.15, 0.15, 0.],
-                                     [0.15, -0.15, 0.],
-                                     [0.15, 0.15, 0.]])
+                                     [-0.15, 0., -0.15],
+                                     [-0.15, 0., 0.15],
+                                     [0.15, 0., -0.15],
+                                     [0.15, 0., 0.15]])
         self.ivy_drone = RigidMobile(rel_body_points)
 
         # initialize scene
@@ -38,9 +38,9 @@ class Simulator(BaseSimulator):
             drone_start_pos = np.array([-1.15, -1.028, 0.6])
             target_pos = np.array([1.025, 1.125, 0.6])
             self._drone.set_position(drone_start_pos)
-            self._drone.set_orientation(np.array([0., 0., 40])*np.pi/180)
+            self._drone.set_orientation(np.array([-90, 50, -180])*np.pi/180)
             self._target.set_position(target_pos)
-            self._target.set_orientation(np.array([0., 0., 40])*np.pi/180)
+            self._target.set_orientation(np.array([-90, 50, -180])*np.pi/180)
             self._default_camera.set_position(np.array([-3.2835, -0.88753, 1.3773]))
             self._default_camera.set_orientation(np.array([-151.07, 70.079, -120.45])*np.pi/180)
 
@@ -88,8 +88,8 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene_no_sim()
 
             # public objects
-            self.drone_start_pose = ivy.array([-1.1500, -1.0280,  0.6000,  0.0000,  0.0000,  0.6981])
-            self.drone_target_pose = ivy.array([1.0250, 1.1250, 0.6000, 0.0000, 0.0000, 0.6981])
+            self.drone_start_pose = ivy.array([-1.1500, -1.0280,  0.6000,  0.7937,  1.7021,  1.7021])
+            self.drone_target_pose = ivy.array([1.0250, 1.1250, 0.6000, 0.7937,  1.7021,  1.7021])
 
             # message
             print('\nInitialized dummy scene with a drone and a target position to reach.'
@@ -113,7 +113,7 @@ class Simulator(BaseSimulator):
             for i in range(100):
                 pose = poses[i]
                 inv_ext_mat = ivy_mech.rot_vec_pose_to_mat_pose(pose)
-                self._drone.set_matrix(self._f.to_numpy(inv_ext_mat).reshape((-1,)).tolist())
+                self._drone.set_matrix(ivy.to_numpy(inv_ext_mat).reshape((-1,)).tolist())
                 time.sleep(0.05)
         elif self._interactive:
             this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -155,7 +155,7 @@ def main(interactive=True, try_use_sim=True, f=None):
     f = choose_random_framework(excluded=['numpy']) if f is None else f
     set_framework(f)
     sim = Simulator(interactive, try_use_sim)
-    lr = 0.01
+    lr = 0.05
     num_anchors = 3
     num_sample_points = 100
 
