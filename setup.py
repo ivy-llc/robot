@@ -17,11 +17,19 @@ from distutils.core import setup
 import setuptools
 
 setup(name='ivy-robot',
-      version='1.1.3',
-      description='Functions and classes for gradient-based robot motion planning, written in Ivy.\n'
-      'Tested with Ivy 1.1.3',
+      version='1.1.4',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
+      description='Functions and classes for gradient-based robot motion planning, written in Ivy.',
+      long_description="""# What is Ivy Robot?\n\nIvy robot provides functions and classes for gradient-based motion
+      planning and trajectory optimization. Classes are provided both for mobile robots and robot manipulators.
+      Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy. Check out the [docs](https://ivy-dl.org/robot) for more info!""",
+      long_description_content_type='text/markdown',
+      url='https://ivy-dl.org/robot',
+      project_urls={
+            'Docs': 'https://ivy-dl.org/robot/',
+            'Source': 'https://github.com/ivy-dl/robot',
+      },
       packages=setuptools.find_packages(),
       install_requires=['ivy-core', 'ivy-mech'],
       classifiers=['License :: OSI Approved :: Apache Software License'],
