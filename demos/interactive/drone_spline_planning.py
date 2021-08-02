@@ -59,10 +59,10 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene()
 
             # public objects
-            drone_starting_inv_ext_mat = ivy.array(np.reshape(self._drone.get_matrix(), (3, 4)), 'float32')
+            drone_starting_inv_ext_mat = ivy.array(self._drone.get_matrix()[0:3].tolist(), 'float32')
             drone_start_rot_vec_pose = ivy_mech.mat_pose_to_rot_vec_pose(drone_starting_inv_ext_mat)
             self.drone_start_pose = drone_start_rot_vec_pose
-            target_inv_ext_mat = ivy.array(np.reshape(self._target.get_matrix(), (3, 4)), 'float32')
+            target_inv_ext_mat = ivy.array(self._target.get_matrix()[0:3].tolist(), 'float32')
             target_rot_vec_pose = ivy_mech.mat_pose_to_rot_vec_pose(target_inv_ext_mat)
             self.drone_target_pose = target_rot_vec_pose
 
@@ -113,7 +113,7 @@ class Simulator(BaseSimulator):
             for i in range(100):
                 pose = poses[i]
                 inv_ext_mat = ivy_mech.rot_vec_pose_to_mat_pose(pose)
-                self._drone.set_matrix(ivy.to_numpy(inv_ext_mat).reshape((-1,)).tolist())
+                self._drone.set_matrix(ivy.to_numpy(ivy_mech.make_transformation_homogeneous(inv_ext_mat)))
                 time.sleep(0.05)
         elif self._interactive:
             this_dir = os.path.dirname(os.path.realpath(__file__))

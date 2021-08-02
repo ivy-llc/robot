@@ -70,7 +70,7 @@ class Simulator(BaseSimulator):
 
             # ivy robot
             self._ivy_manipulator = MicoManipulator(ivy_mech.make_transformation_homogeneous(
-                ivy.reshape(ivy.array(self._robot_base.get_matrix()), (3, 4))))
+                ivy.array(self._robot_base.get_matrix()[0:3].tolist())))
 
             # spline path
             interpolated_joint_path = ivy.transpose(ivy.linspace(robot_start_config, robot_target_config, 100), (1, 0))
