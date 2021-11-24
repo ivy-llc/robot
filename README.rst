@@ -122,7 +122,7 @@ Run Through
 We run through some of the different parts of the library via a simple ongoing example script.
 The full script is available in the demos_ folder, as file ``run_through.py``.
 First, we select a random backend framework to use for the examples, from the options
-``ivy.jax``, ``ivy.tensorflow``, ``ivy.torch``, ``ivy.mxnd`` or ``ivy.numpy``,
+``ivy.jax``, ``ivy.tensorflow``, ``ivy.torch``, ``ivy.mxnet`` or ``ivy.numpy``,
 and use this to set the ivy backend framework.
 
 .. code-block:: python
