@@ -24,7 +24,7 @@ For a local installation, first install the dependencies:
 ```bash
 cd ~/ivy_robot
 python3 -m pip install -r requirements.txt
-cd ~/ivy_robot/demos
+cd ~/ivy_robot/ivy_robot_demos
 python3 -m pip install -r requirements.txt
 ```
 
@@ -55,7 +55,7 @@ be run with python directly for local installations.
 For a basic run through the library:
 
 ```bash
-cd ~/ivy_robot/demos
+cd ~/ivy_robot/ivy_robot_demos
 ./run_demo.sh run_through
 ```
 
@@ -76,7 +76,7 @@ and both methods ivy_robot.sample_spline_path and RigidModile.sample_body are us
 Combined, these enable gradient-based motion planning, in a scene represented by cuboidal signed distance functions.
 
 ```bash
-cd ~/ivy_robot/demos
+cd ~/ivy_robot/ivy_robot_demos
 ./run_demo.sh interactive.drone_spline_planning
 ```
 
@@ -94,7 +94,7 @@ and Manipulator.sample_links are used. Combined, these enable gradient-based mot
 in a scene represented by cuboidal signed distance functions.
 
 ```bash
-cd ~/ivy_robot/demos
+cd ~/ivy_robot/ivy_robot_demos
 ./run_demo.sh interactive.manipulator_spline_planning
 ```
 Example output from the simulator is given below:
