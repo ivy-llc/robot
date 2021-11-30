@@ -45,7 +45,7 @@ long_description = '\n'.join(lines)
 
 
 setup(name='ivy-robot',
-      version='1.1.7',
+      version='1.1.6',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       description='Functions and classes for gradient-based robot motion planning, written in Ivy.',
