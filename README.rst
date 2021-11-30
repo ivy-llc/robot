@@ -66,7 +66,7 @@ Overview
 Ivy robot provides functions and classes for gradient-based motion planning and trajectory optimization.
 Classes are provided both for mobile robots and robot manipulators.  Check out the docs_ for more info!
 
-The library is built on top of the Ivy deep learning framework.
+The library is built on top of the Ivy machine learning framework.
 This means all functions and classes simultaneously support:
 Jax, Tensorflow, PyTorch, MXNet, and Numpy.
 
@@ -486,7 +486,7 @@ making use of functions ``ivy_robot.sample_spline_path`` and ``ivy_robot.Manipul
 Get Involed
 -----------
 
-We hope the functions in this library are useful to a wide range of deep learning developers.
+We hope the functions in this library are useful to a wide range of machine learning developers.
 However, there are many more areas of gradient-based motion planning and broader robotics
 which could be covered by this library.
 
@@ -502,7 +502,7 @@ Citation
 ::
 
     @article{lenton2021ivy,
-      title={Ivy: Templated Deep Learning for Inter-Framework Portability},
+      title={Ivy: Unified Machine Learning for Inter-Framework Portability},
       author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
       journal={arXiv preprint arXiv:2102.02886},
       year={2021}
