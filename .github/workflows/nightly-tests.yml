@@ -7,9 +7,9 @@ jobs:
       - name: Checkout 🛎️Ivy Robot
         uses: actions/checkout@v2
         with:
-          path: ivy_robot
+          path: robot
           persist-credentials: false
 
       - name: Run Tests
         run: |
-          docker run --rm -v `pwd`/ivy_robot:/ivy_robot ivydl/ivy-robot:latest python3 -m pytest ivy_robot_tests/
+          docker run --rm -v `pwd`/robot:/robot ivydl/ivy-robot:latest python3 -m pytest ivy_robot_tests/

@@ -42,5 +42,4 @@ RUN python3 test_dependencies.py -fp requirements.txt,demo_requirements.txt && \
     rm -rf requirements.txt && \
     rm -rf demo_requirements.txt
 
-RUN mkdir ivy_robot
-WORKDIR /ivy_robot
+WORKDIR /robot
