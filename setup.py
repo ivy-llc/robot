@@ -29,14 +29,14 @@ def _replace_logos_html(txt):
     # backend logos
     backends_chunk = chunks[2]
     bc = backends_chunk.split('\n\n')
-    img_str = '.. image:: https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n' \
+    img_str = '.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n' \
               '   :width: 100%'
     backends_chunk = '\n\n'.join(bc[0:1] + [img_str] + bc[2:])
 
     # library logos
     libraries_chunk = chunks[3]
     lc = libraries_chunk.split('\n\n')
-    img_str = '.. image:: https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/ivy_libraries.png?raw=true\n' \
+    img_str = '.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_libraries.png?raw=true\n' \
               '   :width: 100%'
     libraries_chunk = '\n\n'.join(lc[0:1] + [img_str] + lc[2:])
 
@@ -104,10 +104,10 @@ setup(name='ivy-robot',
       description='Functions and classes for gradient-based robot motion planning, written in Ivy.',
       long_description=long_description,
       long_description_content_type='text/x-rst',
-      url='https://ivy-dl.org/robot',
+      url='https://lets-unify.ai/robot',
       project_urls={
-            'Docs': 'https://ivy-dl.org/robot/',
-            'Source': 'https://github.com/ivy-dl/robot',
+            'Docs': 'https://lets-unify.ai/robot/',
+            'Source': 'https://github.com/unifyai/robot',
       },
       packages=setuptools.find_packages(),
       install_requires=[_strip(line) for line in open('requirements.txt', 'r')],
