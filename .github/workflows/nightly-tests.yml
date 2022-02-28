@@ -12,4 +12,4 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker run --rm -v `pwd`/robot:/robot ivydl/ivy-robot:latest python3 -m pytest ivy_robot_tests/
+          docker run --rm -v `pwd`/robot:/robot unifyai/ivy-robot:latest python3 -m pytest ivy_robot_tests/

@@ -37,7 +37,7 @@ For a docker installation, first ensure [docker](https://docs.docker.com/get-doc
 Then simply pull the ivy robot image:
 
 ```bash
-docker pull ivydl/ivy-robot:latest
+docker pull unifyai/ivy-robot:latest
 ```
 
 ## Demos
