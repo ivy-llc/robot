@@ -32,7 +32,8 @@ class Manipulator:
         """
 
         self._num_joints = a_s.shape[-1]
-        # ToDo: incorporate the base_inv_ext_mat more elegantly, instead of the hack as in the sample_links method
+        # ToDo: incorporate the base_inv_ext_mat more elegantly, instead of the hack
+        #  as in the sample_links method
         if base_inv_ext_mat is None:
             self._base_inv_ext_mat = _ivy.identity(4)
         else:
@@ -45,10 +46,9 @@ class Manipulator:
 
         # Forward Kinematics Constant Matrices
 
-        # Based on Denavit-Hartenberg Convention
-        # Using same nomenclature as in:
-        # Modelling, Planning and Control. Bruno Siciliano, Lorenzo Sciavicco, Luigi Villani, Giuseppe Oriolo
-        # page 61 - 65
+        # Based on Denavit-Hartenberg Convention Using same nomenclature as in:
+        # Modelling, Planning and Control. Bruno Siciliano, Lorenzo Sciavicco,
+        # Luigi Villani, Giuseppe Oriolo page 61 - 65
 
         AidashtoAis_list = [_ivy.identity(4, batch_shape=[1])]
 
@@ -113,7 +113,8 @@ class Manipulator:
     # Link poses #
 
     def compute_link_matrices(self, joint_angles, link_num, batch_shape=None):
-        """Compute homogeneous transformation matrices relative to base frame, up to link_num of links.
+        """Compute homogeneous transformation matrices relative to base frame,
+        up to link_num of links.
 
         Parameters
         ----------
@@ -251,7 +252,8 @@ class Manipulator:
         Returns
         -------
         ret
-            The sampled link cartesian positions *[batch_shape,total_sampling_chain_length,3]*
+            The sampled link cartesian positions
+            *[batch_shape,total_sampling_chain_length,3]*
 
         """
 
@@ -317,10 +319,10 @@ class Manipulator:
 class MicoManipulator(Manipulator):
 
     def __init__(self, base_inv_ext_mat=None):
-        """Initialize Kinova Mico robot manipulator instance.
-            Denavit–Hartenberg parameters inferred from KINOVA_MICO_Robotic_arm_user_guide.pdf
-            Joint scales and offsets inferred from JACO²-6DOF-Advanced-Specification-Guide.pdf
-            Both of these PDFs are included in this module for reference
+        """Initialize Kinova Mico robot manipulator instance. Denavit–Hartenberg
+        parameters inferred from KINOVA_MICO_Robotic_arm_user_guide.pdf Joint scales
+        and offsets inferred from JACO²-6DOF-Advanced-Specification-Guide.pdf Both of
+        these PDFs are included in this module for reference
 
         Parameters
         ----------

@@ -95,15 +95,19 @@ def _fit_spline(train_points, train_values, order):
 # -------#
 
 def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
-    """Sample spline path, given sample locations for path defined by the anchor locations and points.
-    `[reference] <https://github.com/tensorflow/addons/blob/v0.11.2/tensorflow_addons/image/interpolate_spline.py>`_
+    """Sample spline path, given sample locations for path defined by the anchor
+    locations and points. `[reference]
+    <https://github.com/tensorflow/addons/blob/v0.11.2/tensorflow_addons/image
+    /interpolate_spline.py>`_
 
     Parameters
     ----------
     anchor_points
-        Anchor locations between 0-1 (regular spacing not necessary) *[batch_shape,num_anchors,1]*
+        Anchor locations between 0-1 (regular spacing not necessary)
+        *[batch_shape,num_anchors,1]*
     anchor_vals
-        Anchor points along the spline path, in path space *[batch_shape,num_anchors,path_dim]*
+        Anchor points along the spline path, in path space
+        *[batch_shape,num_anchors,path_dim]*
     sample_points
         Sample locations between 0-1 *[batch_shape,num_samples,1]*
     order
@@ -112,7 +116,8 @@ def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
     Returns
     -------
     ret
-        Spline path sampled at sample_locations, giving points in path space *[batch_shape,num_samples,path_dim]*
+        Spline path sampled at sample_locations, giving points in path space
+        *[batch_shape,num_samples,path_dim]*
 
     """
 

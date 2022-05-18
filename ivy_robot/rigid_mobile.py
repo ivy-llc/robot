@@ -41,7 +41,8 @@ class RigidMobile:
         Returns
         -------
         ret
-            The sampled body cartesian positions, in the world reference frame *[batch_shape,num_body_points,3]*
+            The sampled body cartesian positions, in the world reference frame
+            *[batch_shape,num_body_points,3]*
 
         """
 
