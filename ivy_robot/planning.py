@@ -1,6 +1,5 @@
-"""
-Spline path sampling functions, useful for differentiable continuous robot path planning.
-"""
+"""Spline path sampling functions, useful for differentiable continuous robot path
+planning. """
 
 # global
 import ivy as _ivy
@@ -96,19 +95,25 @@ def _fit_spline(train_points, train_values, order):
 # -------#
 
 def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
-    """
-    Sample spline path, given sample locations for path defined by the anchor locations and points.
+    """Sample spline path, given sample locations for path defined by the anchor locations and points.
     `[reference] <https://github.com/tensorflow/addons/blob/v0.11.2/tensorflow_addons/image/interpolate_spline.py>`_
 
-    :param anchor_points: Anchor locations between 0-1 (regular spacing not necessary) *[batch_shape,num_anchors,1]*
-    :type anchor_points: array
-    :param anchor_vals: Anchor points along the spline path, in path space *[batch_shape,num_anchors,path_dim]*
-    :type anchor_vals: array
-    :param sample_points: Sample locations between 0-1 *[batch_shape,num_samples,1]*
-    :type sample_points: array
-    :param order: Order of the spline path interpolation
-    :type order: float
-    :return: Spline path sampled at sample_locations, giving points in path space *[batch_shape,num_samples,path_dim]*
+    Parameters
+    ----------
+    anchor_points
+        Anchor locations between 0-1 (regular spacing not necessary) *[batch_shape,num_anchors,1]*
+    anchor_vals
+        Anchor points along the spline path, in path space *[batch_shape,num_anchors,path_dim]*
+    sample_points
+        Sample locations between 0-1 *[batch_shape,num_samples,1]*
+    order
+        Order of the spline path interpolation (Default value = 3)
+
+    Returns
+    -------
+    ret
+        Spline path sampled at sample_locations, giving points in path space *[batch_shape,num_samples,path_dim]*
+
     """
 
     # BS x N x PD,    BS x 2 x PD

@@ -1,6 +1,4 @@
-"""
-Rigid Mobile class, containing functions for sampling rigid mobile robots
-"""
+"""Rigid Mobile class, containing functions for sampling rigid mobile robots"""
 
 # global
 import ivy_mech
@@ -12,11 +10,13 @@ MIN_DENOMINATOR = 1e-12
 class RigidMobile:
 
     def __init__(self, rel_body_points):
-        """
-        Initialize rigid mobile robot instance
+        """Initialize rigid mobile robot instance
 
-        :param rel_body_points: Relative body points *[num_body_points,3]*
-        :type rel_body_points: array
+        Parameters
+        ----------
+        rel_body_points :
+            Relative body points *[num_body_points,3]*
+
         """
 
         # 4 x NBP
@@ -29,14 +29,20 @@ class RigidMobile:
     # Body sampling #
 
     def sample_body(self, inv_ext_mats, batch_shape=None):
-        """
-        Sample links of the robot at uniformly distributed cartesian positions.
+        """Sample links of the robot at uniformly distributed cartesian positions.
 
-        :param inv_ext_mats: Inverse extrinsic matrices *[batch_shape,3,4]*
-        :type inv_ext_mats: array
-        :param batch_shape: Shape of batch. Inferred from inputs if None.
-        :type batch_shape: sequence of ints, optional
-        :return: The sampled body cartesian positions, in the world reference frame *[batch_shape,num_body_points,3]*
+        Parameters
+        ----------
+        inv_ext_mats
+            Inverse extrinsic matrices *[batch_shape,3,4]*
+        batch_shape
+            Shape of batch. Inferred from inputs if None. (Default value = None)
+
+        Returns
+        -------
+        ret
+            The sampled body cartesian positions, in the world reference frame *[batch_shape,num_body_points,3]*
+
         """
 
         if batch_shape is None:
