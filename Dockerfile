@@ -38,8 +38,8 @@ RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/
 COPY ivy_robot_demos/requirements.txt /demo_requirements.txt
 RUN cat demo_requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
 
-RUN python3 test_dependencies.py -fp requirements.txt,demo_requirements.txt && \
-    rm -rf requirements.txt && \
-    rm -rf demo_requirements.txt
+# RUN python3 test_dependencies.py -fp requirements.txt,demo_requirements.txt && \
+#     rm -rf requirements.txt && \
+#     rm -rf demo_requirements.txt
 
 WORKDIR /robot
