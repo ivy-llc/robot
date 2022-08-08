@@ -8,12 +8,6 @@ RUN rm -rf ivy && \
     cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 setup.py develop --no-deps
 
-# Install Ivy Demo Utils
-RUN git clone https://github.com/unifyai/demo-utils && \
-    cd demo-utils && \
-    cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 setup.py develop --no-deps
-
 # Install Ivy Mech
 RUN git clone https://github.com/unifyai/mech && \
     cd mech && \
@@ -29,6 +23,12 @@ RUN git clone https://github.com/unifyai/vision && \
 # Install Ivy Robot
 RUN git clone https://github.com/unifyai/robot && \
     cd robot && \
+    cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    python3 setup.py develop --no-deps
+
+# Install Ivy Demo Utils
+RUN git clone https://github.com/unifyai/demo-utils && \
+    cd demo-utils && \
     cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 setup.py develop --no-deps
 
