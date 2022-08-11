@@ -35,7 +35,7 @@ class Manipulator:
         # ToDo: incorporate the base_inv_ext_mat more elegantly, instead of the hack
         #  as in the sample_links method
         if base_inv_ext_mat is None:
-            self._base_inv_ext_mat = _ivy.identity(4)
+            self._base_inv_ext_mat = _ivy.eye(4)
         else:
             self._base_inv_ext_mat = base_inv_ext_mat
 
@@ -50,7 +50,7 @@ class Manipulator:
         # Modelling, Planning and Control. Bruno Siciliano, Lorenzo Sciavicco,
         # Luigi Villani, Giuseppe Oriolo page 61 - 65
 
-        AidashtoAis_list = [_ivy.identity(4, batch_shape=[1])]
+        AidashtoAis_list = [_ivy.eye(4, batch_shape=[1])]
 
         # repeated blocks
 
@@ -70,18 +70,18 @@ class Manipulator:
             sin_alpha = _ivy.reshape(_ivy.sin(alpha_s[i]), [1] * 3)
 
             # 1 x 1 x 4
-            top_row = _ivy.concatenate((start_of_top_row, a_i), -1)
-            top_middle_row = _ivy.concatenate((zeros, cos_alpha, -sin_alpha, zeros), -1)
-            bottom_middle_row = _ivy.concatenate((zeros, sin_alpha, cos_alpha, zeros), -1)
+            top_row = _ivy.concat((start_of_top_row, a_i), axis=-1)
+            top_middle_row = _ivy.concat((zeros, cos_alpha, -sin_alpha, zeros), axis=-1)
+            bottom_middle_row = _ivy.concat((zeros, sin_alpha, cos_alpha, zeros), axis=-1)
 
             # 1 x 4 x 4
-            AidashtoAi = _ivy.concatenate((top_row, top_middle_row, bottom_middle_row, bottom_row), 1)
+            AidashtoAi = _ivy.concat((top_row, top_middle_row, bottom_middle_row, bottom_row), axis=1)
 
             # list
             AidashtoAis_list.append(AidashtoAi)
 
         # NJ x 4 x 4
-        self._AidashtoAis = _ivy.concatenate(AidashtoAis_list, 0)
+        self._AidashtoAis = _ivy.concat(AidashtoAis_list, axis=0)
 
         # Constant Jacobian Params
 
@@ -139,12 +139,12 @@ class Manipulator:
 
         # BS x 1 x NJ
         try:
-            dh_joint_angles = _ivy.expand_dims(joint_angles * self._dh_joint_scales - self._dh_joint_offsets, -2)
+            dh_joint_angles = _ivy.expand_dims(joint_angles * self._dh_joint_scales - self._dh_joint_offsets, axis=-2)
         except:
             d = 0
 
         # BS x 1 x 4 x 4
-        A00 = _ivy.identity(4, batch_shape=batch_shape + [1])
+        A00 = _ivy.eye(4, batch_shape=batch_shape + [1])
 
         Aitoip1dashs = list()
         Aiip1s = list()
@@ -172,14 +172,14 @@ class Manipulator:
         for i in range(self._num_joints):
 
             # BS x 1 x 4
-            top_row = _ivy.concatenate((_ivy.cos(dh_joint_angles[..., i:i + 1]),
-                                           -_ivy.sin(dh_joint_angles[..., i:i + 1]), zeros), -1)
-            top_middle_row = _ivy.concatenate((_ivy.sin(dh_joint_angles[..., i:i + 1]),
-                                                  _ivy.cos(dh_joint_angles[..., i:i + 1]), zeros), -1)
-            bottom_middle_row = _ivy.concatenate((start_of_bottom_middle, dis[..., i:i + 1]), -1)
+            top_row = _ivy.concat((_ivy.cos(dh_joint_angles[..., i:i + 1]),
+                                           -_ivy.sin(dh_joint_angles[..., i:i + 1]), zeros), axis=-1)
+            top_middle_row = _ivy.concat((_ivy.sin(dh_joint_angles[..., i:i + 1]),
+                                                  _ivy.cos(dh_joint_angles[..., i:i + 1]), zeros), axis=-1)
+            bottom_middle_row = _ivy.concat((start_of_bottom_middle, dis[..., i:i + 1]), axis=-1)
 
             # BS x 4 x 4
-            Aitoip1dash = _ivy.concatenate((top_row, top_middle_row, bottom_middle_row, bottom_row), -2)
+            Aitoip1dash = _ivy.concat((top_row, top_middle_row, bottom_middle_row, bottom_row), axis=-2)
 
             # (BSx4) x 4
             Aitoip1dash_flat = _ivy.reshape(Aitoip1dash, (-1, 4))
@@ -196,11 +196,11 @@ class Manipulator:
             # append term to lists
             Aitoip1dashs.append(Aitoip1dash)
             Aiip1s.append(Aiip1)
-            A0is.append(_ivy.expand_dims(A0ip1, -3))
+            A0is.append(_ivy.expand_dims(A0ip1, axis=-3))
 
             if i + 1 == link_num:
                 # BS x LN x 4 x 4
-                return _ivy.concatenate(A0is, -3)
+                return _ivy.concat(A0is, axis=-3)
 
         raise Exception('wrong parameter entered for link_num, please enter integer from 1-' + str(self._num_joints))
 
@@ -276,7 +276,7 @@ class Manipulator:
         segment_ends = link_positions[..., 1:, :]
 
         # LN
-        segment_sizes = _ivy.cast(_ivy.ceil(
+        segment_sizes = _ivy.astype(_ivy.ceil(
             self._link_lengths[0:link_num] * samples_per_metre), 'int32')
 
         # list of segments
@@ -298,22 +298,22 @@ class Manipulator:
                 segments_list.append(segment[..., :-1, :])
 
         # BS x total_robot_chain_length x 3
-        all_segments = _ivy.concatenate(segments_list, -2)
+        all_segments = _ivy.concat(segments_list, axis=-2)
 
         # BS x total_robot_chain_length x 4
         all_segments_homo = _ivy_mech.make_coordinates_homogeneous(all_segments)
 
         # 4 x BSxtotal_robot_chain_length
-        all_segments_homo_trans = _ivy.reshape(_ivy.transpose(
-            all_segments_homo, [num_batch_dims + 1] + batch_dims_for_trans + [num_batch_dims]), (4, -1))
+        all_segments_homo_trans = _ivy.reshape(_ivy.permute_dims(
+            all_segments_homo, axes=[num_batch_dims + 1] + batch_dims_for_trans + [num_batch_dims]), (4, -1))
 
         # 3 x BSxtotal_robot_chain_length
         transformed_trans = _ivy.matmul(self._base_inv_ext_mat[..., 0:3, :], all_segments_homo_trans)
 
         # BS x total_robot_chain_length x 3
-        return _ivy.transpose(_ivy.reshape(
+        return _ivy.permute_dims(_ivy.reshape(
             transformed_trans, [3] + batch_shape + [-1]),
-            [i+1 for i in batch_dims_for_trans] + [num_batch_dims+1] + [0])
+            axes=[i+1 for i in batch_dims_for_trans] + [num_batch_dims+1] + [0])
 
 
 class MicoManipulator(Manipulator):

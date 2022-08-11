@@ -51,7 +51,7 @@ class RigidMobile:
         batch_shape = list(batch_shape)
 
         # (BSx3) x NBP
-        body_points_trans = _ivy.matmul(_ivy.reshape(inv_ext_mats, (-1, 4)), self._rel_body_points_homo_trans)
+        body_points_trans = _ivy.matmul(_ivy.reshape(_ivy.array(inv_ext_mats), (-1, 4)), self._rel_body_points_homo_trans)
 
         # BS x NBP x 3
         return _ivy.swapaxes(_ivy.reshape(body_points_trans, batch_shape + [3, -1]), -1, -2)
