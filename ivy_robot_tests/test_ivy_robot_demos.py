@@ -4,7 +4,7 @@ Collection of tests for ivy robot demos
 
 # global
 import pytest
-import ivy_tests.helpers as helpers
+from ivy_tests.test_ivy import helpers
 
 
 def test_demo_run_through(dev_str, f, call):

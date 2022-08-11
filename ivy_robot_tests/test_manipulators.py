@@ -5,7 +5,7 @@ Collection of tests for mico robot manipulator
 # global
 import pytest
 import numpy as np
-import ivy_tests.helpers as helpers
+from ivy_tests.test_ivy import helpers
 
 # local
 from ivy_robot.manipulator import MicoManipulator
