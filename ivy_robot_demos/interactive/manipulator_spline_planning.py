@@ -151,7 +151,7 @@ def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val
     sdf_vals = sim.sdf(ivy.reshape(link_positions, (-1, 3)))
     coll_cost = -ivy.mean(sdf_vals)
     total_cost = length_cost + coll_cost*10
-    return total_cost[0], joint_angles, link_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
+    return total_cost, joint_angles, link_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
 
 
 def main(interactive=True, try_use_sim=True, f=None, fw=None):
