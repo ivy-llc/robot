@@ -142,7 +142,7 @@ def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val
     sdf_vals = sim.sdf(ivy.reshape(body_positions, (-1, 3)))
     coll_cost = -ivy.mean(sdf_vals)
     total_cost = length_cost + coll_cost * 10
-    return total_cost[0], poses, body_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
+    return total_cost.to_scalar(), poses, body_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
 
 
 def main(interactive=True, try_use_sim=True, f=None, fw=None):
@@ -175,10 +175,10 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     colliding = True
     clearance = 0.1
     poses = None
-    while colliding:
+    while colliding and it < 13:
         total_cost, grads, poses, body_positions, sdf_vals = ivy.execute_with_gradients(
-            lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, drone_start_pose, target_pose, query_points, sim),
-            ivy.Container({'w': learnable_anchor_vals}))
+            lambda xs: compute_cost_and_sdfs(xs, anchor_points, drone_start_pose, target_pose, query_points, sim),
+            learnable_anchor_vals)
         colliding = ivy.min(sdf_vals) < clearance
         sim.update_path_visualization(body_positions, sdf_vals,
                                       os.path.join(this_dir, 'dsp_no_sim', 'path_{}.png'.format(it)))
