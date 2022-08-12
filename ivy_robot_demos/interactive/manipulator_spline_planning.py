@@ -184,7 +184,7 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     colliding = True
     clearance = 0
     joint_query_vals = None
-    while colliding:
+    while colliding and it < 11:
         total_cost, grads, joint_query_vals, link_positions, sdf_vals = ivy.execute_with_gradients(
             lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, robot_start_config, robot_target_config,
                                              query_points, sim), ivy.Container({'w': learnable_anchor_vals}))
