@@ -7,8 +7,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 from ivy_robot.manipulator import Manipulator
 from ivy_robot.rigid_mobile import RigidMobile
-from ivy.framework_handler import set_framework
-from ivy_demo_utils.framework_utils import get_framework_from_str, choose_random_framework
 
 INTERACTIVE = True
 
@@ -94,7 +92,7 @@ def show_full_spline_path(anchor_poses, interpolated_poses, sc, tc,
     plt.show()
 
 
-def main(interactive=True, f=None):
+def main(interactive=True, f=None, fw=None):
 
     global INTERACTIVE
     INTERACTIVE = interactive
@@ -104,7 +102,9 @@ def main(interactive=True, f=None):
 
     # choose random framework
 
-    set_framework(choose_random_framework() if f is None else f)
+    fw = ivy.choose_random_backend() if fw is None else fw
+    ivy.set_backend(fw)
+    f = ivy.get_backend(backend=fw) if f is None else f
 
     # Spline Interpolation #
     # ---------------------#
@@ -129,24 +129,24 @@ def main(interactive=True, f=None):
     # as 6DOF poses
 
     # 1 x 6
-    start_pose = ivy.concatenate((start_xy, constant_z, constant_rot_vec), -1)
-    anchor1_pose = ivy.concatenate((anchor1_xy, constant_z, constant_rot_vec), -1)
-    anchor2_pose = ivy.concatenate((anchor2_xy, constant_z, constant_rot_vec), -1)
-    anchor3_pose = ivy.concatenate((anchor3_xy, constant_z, constant_rot_vec), -1)
-    target_pose = ivy.concatenate((target_xy, constant_z, constant_rot_vec), -1)
+    start_pose = ivy.concat((start_xy, constant_z, constant_rot_vec), axis=-1)
+    anchor1_pose = ivy.concat((anchor1_xy, constant_z, constant_rot_vec), axis=-1)
+    anchor2_pose = ivy.concat((anchor2_xy, constant_z, constant_rot_vec), axis=-1)
+    anchor3_pose = ivy.concat((anchor3_xy, constant_z, constant_rot_vec), axis=-1)
+    target_pose = ivy.concat((target_xy, constant_z, constant_rot_vec), axis=-1)
 
     num_anchors = num_free_anchors + 2
 
     # num_anchors x 6
-    anchor_poses = ivy.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
+    anchor_poses = ivy.concat((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), axis=0)
 
     # uniform sampling for spline
 
     # num_anchors x 1
-    anchor_points = ivy.expand_dims(ivy.linspace(0., 1., num_anchors), -1)
+    anchor_points = ivy.expand_dims(ivy.linspace(0., 1., num_anchors), axis=-1)
 
     # num_samples x 1
-    query_points = ivy.expand_dims(ivy.linspace(0., 1., num_samples), -1)
+    query_points = ivy.expand_dims(ivy.linspace(0., 1., num_samples), axis=-1)
 
     # interpolated spline poses
 
@@ -193,14 +193,14 @@ def main(interactive=True, f=None):
     # as 6DOF poses
 
     # 1 x 6
-    start_pose = ivy.concatenate((start_xy, constant_z, start_rot_vec), -1)
-    anchor1_pose = ivy.concatenate((anchor1_xy, constant_z, anchor1_rot_vec), -1)
-    anchor2_pose = ivy.concatenate((anchor2_xy, constant_z, anchor2_rot_vec), -1)
-    anchor3_pose = ivy.concatenate((anchor3_xy, constant_z, anchor3_rot_vec), -1)
-    target_pose = ivy.concatenate((target_xy, constant_z, target_rot_vec), -1)
+    start_pose = ivy.concat((start_xy, constant_z, start_rot_vec), axis=-1)
+    anchor1_pose = ivy.concat((anchor1_xy, constant_z, anchor1_rot_vec), axis=-1)
+    anchor2_pose = ivy.concat((anchor2_xy, constant_z, anchor2_rot_vec), axis=-1)
+    anchor3_pose = ivy.concat((anchor3_xy, constant_z, anchor3_rot_vec), axis=-1)
+    target_pose = ivy.concat((target_xy, constant_z, target_rot_vec), axis=-1)
 
     # num_anchors x 6
-    anchor_poses = ivy.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
+    anchor_poses = ivy.concat((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), axis=0)
 
     # interpolated spline poses
 
@@ -257,9 +257,9 @@ def main(interactive=True, f=None):
     anchor3_joint_angles = -ivy.array([[0.8, 0.4]])*np.pi/4
 
     # num_anchors x 2
-    anchor_joint_angles = ivy.concatenate(
+    anchor_joint_angles = ivy.concat(
         (start_joint_angles, anchor1_joint_angles, anchor2_joint_angles, anchor3_joint_angles,
-         target_joint_angles), 0)
+         target_joint_angles), axis=0)
 
     # interpolated joint angles
 
@@ -288,8 +288,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--non_interactive', action='store_true',
                         help='whether to run the demo in non-interactive mode.')
-    parser.add_argument('--framework', type=str, default=None,
-                        help='which framework to use. Chooses a random framework if unspecified.')
+    parser.add_argument('--backend', type=str, default=None,
+                        help='which backend to use. Chooses a random backend if unspecified.')
     parsed_args = parser.parse_args()
-    framework = None if parsed_args.framework is None else get_framework_from_str(parsed_args.framework)
-    main(not parsed_args.non_interactive, framework)
+    fw = parsed_args.backend
+    f = None if fw is None else ivy.get_backend(backend=fw)
+    main(not parsed_args.non_interactive, f, fw)

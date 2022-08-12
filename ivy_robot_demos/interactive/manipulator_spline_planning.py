@@ -8,11 +8,8 @@ import ivy_robot
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-from ivy.core.container import Container
 from ivy_robot.manipulator import MicoManipulator
 from ivy_demo_utils.ivy_scene.scene_utils import BaseSimulator
-from ivy.framework_handler import set_framework, unset_framework
-from ivy_demo_utils.framework_utils import choose_random_framework, get_framework_from_str
 
 
 # noinspection PyProtectedMember
@@ -65,16 +62,16 @@ class Simulator(BaseSimulator):
             self.setup_primitive_scene()
 
             # robot configs
-            robot_start_config = ivy.array(self._robot.get_joint_positions(), 'float32')
-            robot_target_config = ivy.array(self._robot_target.get_joint_positions(), 'float32')
+            robot_start_config = ivy.array(self._robot.get_joint_positions(), dtype='float32')
+            robot_target_config = ivy.array(self._robot_target.get_joint_positions(), dtype='float32')
 
             # ivy robot
             self._ivy_manipulator = MicoManipulator(ivy_mech.make_transformation_homogeneous(
                 ivy.array(self._robot_base.get_matrix()[0:3].tolist())))
 
             # spline path
-            interpolated_joint_path = ivy.transpose(ivy.linspace(robot_start_config, robot_target_config, 100), (1, 0))
-            multi_spline_points = ivy.transpose(self._ivy_manipulator.sample_links(interpolated_joint_path), (1, 0, 2))
+            interpolated_joint_path = ivy.permute_dims(ivy.linspace(robot_start_config, robot_target_config, 100), axes=(1, 0))
+            multi_spline_points = ivy.permute_dims(self._ivy_manipulator.sample_links(interpolated_joint_path), axes=(1, 0, 2))
             multi_spline_sdf_vals = ivy.reshape(self.sdf(ivy.reshape(multi_spline_points, (-1, 3))), (-1, 100, 1))
             self.update_path_visualization(multi_spline_points, multi_spline_sdf_vals, None)
 
@@ -141,41 +138,42 @@ def compute_length(query_vals):
     start_vals = query_vals[:, 0:-1]
     end_vals = query_vals[:, 1:]
     dists_sqrd = ivy.maximum((end_vals - start_vals)**2, 1e-12)
-    distances = ivy.reduce_sum(dists_sqrd, -1)**0.5
-    return ivy.reduce_mean(ivy.reduce_sum(distances, 1))
+    distances = ivy.sum(dists_sqrd, axis=-1)**0.5
+    return ivy.mean(ivy.sum(distances, axis=1))
 
 
 def compute_cost_and_sdfs(learnable_anchor_vals, anchor_points, start_anchor_val, end_anchor_val, query_points, sim):
-    anchor_vals = ivy.concatenate((ivy.expand_dims(start_anchor_val, 0),
-                                   learnable_anchor_vals, ivy.expand_dims(end_anchor_val, 0)), 0)
+    anchor_vals = ivy.concat((ivy.expand_dims(start_anchor_val, axis=0),
+                                   learnable_anchor_vals, ivy.expand_dims(end_anchor_val, axis=0)), axis=0)
     joint_angles = ivy_robot.sample_spline_path(anchor_points, anchor_vals, query_points)
-    link_positions = ivy.transpose(sim.ivy_manipulator.sample_links(joint_angles), (1, 0, 2))
+    link_positions = ivy.permute_dims(sim.ivy_manipulator.sample_links(joint_angles), axes=(1, 0, 2))
     length_cost = compute_length(link_positions)
     sdf_vals = sim.sdf(ivy.reshape(link_positions, (-1, 3)))
-    coll_cost = -ivy.reduce_mean(sdf_vals)
+    coll_cost = -ivy.mean(sdf_vals)
     total_cost = length_cost + coll_cost*10
     return total_cost[0], joint_angles, link_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
 
 
-def main(interactive=True, try_use_sim=True, f=None):
+def main(interactive=True, try_use_sim=True, f=None, fw=None):
 
     # config
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    f = choose_random_framework(excluded=['numpy']) if f is None else f
-    set_framework(f)
+    fw = ivy.choose_random_backend(excluded=['numpy']) if fw is None else fw
+    ivy.set_backend(fw)
+    f = ivy.get_backend(backend=fw) if f is None else f
     sim = Simulator(interactive, try_use_sim)
     lr = 0.5
     num_anchors = 3
     num_sample_points = 100
 
     # spline start
-    anchor_points = ivy.cast(ivy.expand_dims(ivy.linspace(0, 1, 2 + num_anchors), -1), 'float32')
-    query_points = ivy.cast(ivy.expand_dims(ivy.linspace(0, 1, num_sample_points), -1), 'float32')
+    anchor_points = ivy.astype(ivy.expand_dims(ivy.linspace(0, 1, 2 + num_anchors), axis=-1), 'float32')
+    query_points = ivy.astype(ivy.expand_dims(ivy.linspace(0, 1, num_sample_points), axis=-1), 'float32')
 
     # learnable parameters
-    robot_start_config = ivy.array(ivy.cast(sim.robot_start_config, 'float32'))
-    robot_target_config = ivy.array(ivy.cast(sim.robot_target_config, 'float32'))
-    learnable_anchor_vals = ivy.variable(ivy.cast(ivy.transpose(ivy.linspace(
+    robot_start_config = ivy.array(ivy.astype(sim.robot_start_config, 'float32'))
+    robot_target_config = ivy.array(ivy.astype(sim.robot_target_config, 'float32'))
+    learnable_anchor_vals = ivy.variable(ivy.astype(ivy.permute_dims(ivy.linspace(
         robot_start_config, robot_target_config, 2 + num_anchors)[..., 1:-1], (1, 0)), 'float32'))
 
     # optimizer
@@ -189,15 +187,15 @@ def main(interactive=True, try_use_sim=True, f=None):
     while colliding:
         total_cost, grads, joint_query_vals, link_positions, sdf_vals = ivy.execute_with_gradients(
             lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, robot_start_config, robot_target_config,
-                                             query_points, sim), Container({'w': learnable_anchor_vals}))
-        colliding = ivy.reduce_min(sdf_vals[2:]) < clearance
+                                             query_points, sim), ivy.Container({'w': learnable_anchor_vals}))
+        colliding = ivy.min(sdf_vals[2:]) < clearance
         sim.update_path_visualization(link_positions, sdf_vals,
                                       os.path.join(this_dir, 'msp_no_sim', 'path_{}.png'.format(it)))
-        learnable_anchor_vals = optimizer.step(Container({'w': learnable_anchor_vals}), grads)['w']
+        learnable_anchor_vals = optimizer.step(ivy.Container({'w': learnable_anchor_vals}), grads)['w']
         it += 1
     sim.execute_motion(joint_query_vals)
     sim.close()
-    unset_framework()
+    ivy.unset_backend()
 
 
 if __name__ == '__main__':
@@ -206,8 +204,9 @@ if __name__ == '__main__':
                         help='whether to run the demo in non-interactive mode.')
     parser.add_argument('--no_sim', action='store_true',
                         help='whether to run the demo without attempt to use the PyRep simulator.')
-    parser.add_argument('--framework', type=str, default=None,
-                        help='which framework to use. Chooses a random framework if unspecified.')
+    parser.add_argument('--backend', type=str, default=None,
+                        help='which backend to use. Chooses a random backend if unspecified.')
     parsed_args = parser.parse_args()
-    framework = None if parsed_args.framework is None else get_framework_from_str(parsed_args.framework)
-    main(not parsed_args.non_interactive, not parsed_args.no_sim, framework)
+    fw = parsed_args.backend
+    f = None if fw is None else ivy.get_backend(backend=fw)
+    main(not parsed_args.non_interactive, not parsed_args.no_sim, f, fw)
