@@ -2,7 +2,7 @@
 planning. """
 
 # global
-import ivy as _ivy
+import ivy
 
 
 # Helpers #
@@ -12,24 +12,24 @@ def _pairwise_distance(x, y):
 
     # BS x NX x 1 x 1
     try:
-        x = _ivy.expand_dims(x, axis=-2)
+        x = ivy.expand_dims(x, axis=-2)
     except:
         d = 0
 
     # BS x 1 x NY x 1
-    y = _ivy.expand_dims(y, axis=-3)
+    y = ivy.expand_dims(y, axis=-3)
 
     # BS x NX x NY
-    return _ivy.sum((x - y) ** 2, axis=-1)
+    return ivy.sum((x - y) ** 2, axis=-1)
 
 
 def _phi(r, order):
-    eps = _ivy.array([1e-6], dtype='float32')
+    eps = ivy.array([1e-6], dtype='float32')
     if order % 2 == 0:
-        r = _ivy.maximum(r, eps)
-        return 0.5 * (r ** (0.5 * order)) * _ivy.log(r)
+        r = ivy.maximum(r, eps)
+        return 0.5 * (r ** (0.5 * order)) * ivy.log(r)
     else:
-        r = _ivy.maximum(r, eps)
+        r = ivy.maximum(r, eps)
         return r ** (0.5 * order)
 
 
@@ -52,34 +52,34 @@ def _fit_spline(train_points, train_values, order):
     matrix_a = _phi(_pairwise_distance(c, c), order)
 
     # BS x N x 1
-    ones = _ivy.ones_like(c[..., :1])
+    ones = ivy.ones_like(c[..., :1])
 
     # BS x N x 2
-    matrix_b = _ivy.concat([c, ones], axis=-1)
+    matrix_b = ivy.concat([c, ones], axis=-1)
 
     # BS x 2 x N
-    matrix_b_trans = _ivy.permute_dims(matrix_b, axes=list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims])
+    matrix_b_trans = ivy.permute_dims(matrix_b, axes=list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims])
 
     # BS x N+2 x N
-    left_block = _ivy.concat([matrix_a, matrix_b_trans], axis=-2)
+    left_block = ivy.concat([matrix_a, matrix_b_trans], axis=-2)
 
     # BS x 2 x 2
-    lhs_zeros = _ivy.zeros(batch_shape + [2, 2])
+    lhs_zeros = ivy.zeros(batch_shape + [2, 2])
 
     # BS x N+2 x 2
-    right_block = _ivy.concat([matrix_b, lhs_zeros], axis=-2)
+    right_block = ivy.concat([matrix_b, lhs_zeros], axis=-2)
 
     # BS x N+2 x N+2
-    lhs = _ivy.concat([left_block, right_block], axis=-1)
+    lhs = ivy.concat([left_block, right_block], axis=-1)
 
     # BS x 2 x PD
-    rhs_zeros = _ivy.zeros(batch_shape + [2, pd])
+    rhs_zeros = ivy.zeros(batch_shape + [2, pd])
 
     # BS x N+2 x PD
-    rhs = _ivy.concat([f_, rhs_zeros], axis=-2)
+    rhs = ivy.concat([f_, rhs_zeros], axis=-2)
 
     # BS x N+2 x PD
-    w_v = _ivy.matmul(_ivy.pinv(lhs), rhs)
+    w_v = ivy.matmul(ivy.pinv(lhs), rhs)
 
     # BS x N x PD
     w = w_v[..., :n, :]
@@ -131,13 +131,13 @@ def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
     phi_pairwise_dists = _phi(pairwise_dists, order)
 
     # BS x NS x PD
-    rbf_term = _ivy.matmul(phi_pairwise_dists, w)
+    rbf_term = ivy.matmul(phi_pairwise_dists, w)
 
     # Polynomial / linear term.
 
     # BS x NS x 2
-    query_points_pad = _ivy.concat([sample_points, _ivy.ones_like(sample_points[..., :1])], axis=-1)
+    query_points_pad = ivy.concat([sample_points, ivy.ones_like(sample_points[..., :1])], axis=-1)
 
     # BS x NS x PD
-    linear_term = _ivy.matmul(query_points_pad, v)
+    linear_term = ivy.matmul(query_points_pad, v)
     return rbf_term + linear_term
