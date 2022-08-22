@@ -31,9 +31,11 @@ class RigidMobileTestData:
 td = RigidMobileTestData()
 
 
-def test_sample_body(dev_str, call):
+def test_sample_body(dev_str, fw):
+    ivy.set_backend(fw)
     mico = RigidMobile(ivy.array(td.rel_body_points, dtype='float32'))
-    assert np.allclose(call(mico.sample_body, td.inv_ext_mat),
+    assert np.allclose(mico.sample_body(td.inv_ext_mat),
                        td.sampled_body, atol=1e-6)
-    assert np.allclose(call(mico.sample_body, np.tile(np.expand_dims(td.inv_ext_mat, 0), (5, 1, 1))),
+    assert np.allclose(mico.sample_body(np.tile(np.expand_dims(td.inv_ext_mat, 0), (5, 1, 1))),
                        np.tile(np.expand_dims(td.sampled_body, 0), (5, 1, 1)), atol=1e-6)
+    ivy.unset_backend()

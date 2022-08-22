@@ -3,6 +3,7 @@ Collection of tests for unified linear algebra functions
 """
 
 # global
+import ivy
 import numpy as np
 
 # local
@@ -26,7 +27,9 @@ class SplineTestData:
 td = SplineTestData()
 
 
-def test_spline_interpolation(dev_str, call):
+def test_spline_interpolation(dev_str, fw):
+    ivy.set_backend(fw)
     assert np.allclose(
-        call(ivy_robot.planning.sample_spline_path, td.train_points_3d, td.train_values_3d,
+        ivy_robot.planning.sample_spline_path(td.train_points_3d, td.train_values_3d,
              td.query_points_3d), td.query_values_3d, atol=1e-2)
+    ivy.unset_backend()

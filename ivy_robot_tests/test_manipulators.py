@@ -3,9 +3,9 @@ Collection of tests for mico robot manipulator
 """
 
 # global
+import ivy
 import pytest
 import numpy as np
-from ivy_tests.test_ivy import helpers
 
 # local
 from ivy_robot.manipulator import MicoManipulator
@@ -84,20 +84,24 @@ class MicoTestData:
 td = MicoTestData()
 
 
-def test_compute_mico_link_matrices(dev_str, call):
+def test_compute_mico_link_matrices(dev_str, fw):
+    ivy.set_backend(fw)
     mico = MicoManipulator()
-    assert np.allclose(call(mico.compute_link_matrices, td.joint_angles, 6),
+    assert np.allclose(mico.compute_link_matrices(td.joint_angles, 6),
                        td.true_link_matrices, rtol=1e-03, atol=1e-03)
-    assert np.allclose(call(mico.compute_link_matrices, np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
+    assert np.allclose(mico.compute_link_matrices(np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
                        np.tile(np.expand_dims(td.true_link_matrices, 0), (5, 1, 1, 1)), rtol=1e-03, atol=1e-03)
+    ivy.unset_backend()
 
 
-def test_sample_mico_links(dev_str, call):
-    if call in [helpers.tf_graph_call]:
+def test_sample_mico_links(dev_str, fw):
+    if fw == 'tensorflow_graph':
         # the need to dynamically infer array shapes makes this only valid in eager mode currently
         pytest.skip()
+    ivy.set_backend(fw)
     mico = MicoManipulator()
-    assert np.allclose(call(mico.sample_links, td.joint_angles, 6),
+    assert np.allclose(mico.sample_links(td.joint_angles, 6),
                        td.sampled_link, atol=1e-6)
-    assert np.allclose(call(mico.sample_links, np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
+    assert np.allclose(mico.sample_links(np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
                        np.tile(np.expand_dims(td.sampled_link, 0), (5, 1, 1, 1)), atol=1e-6)
+    ivy.unset_backend()
