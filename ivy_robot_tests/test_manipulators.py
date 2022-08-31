@@ -87,9 +87,9 @@ td = MicoTestData()
 def test_compute_mico_link_matrices(dev_str, fw):
     ivy.set_backend(fw)
     mico = MicoManipulator()
-    assert np.allclose(mico.compute_link_matrices(td.joint_angles, 6),
+    assert np.allclose(mico.compute_link_matrices(ivy.array(td.joint_angles), 6),
                        td.true_link_matrices, rtol=1e-03, atol=1e-03)
-    assert np.allclose(mico.compute_link_matrices(np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
+    assert np.allclose(mico.compute_link_matrices(ivy.array(np.tile(np.expand_dims(td.joint_angles, 0), (5, 1))), 6),
                        np.tile(np.expand_dims(td.true_link_matrices, 0), (5, 1, 1, 1)), rtol=1e-03, atol=1e-03)
     ivy.unset_backend()
 
