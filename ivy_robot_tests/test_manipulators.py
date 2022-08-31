@@ -100,8 +100,8 @@ def test_sample_mico_links(dev_str, fw):
         pytest.skip()
     ivy.set_backend(fw)
     mico = MicoManipulator()
-    assert np.allclose(mico.sample_links(td.joint_angles, 6),
+    assert np.allclose(mico.sample_links(ivy.array(td.joint_angles), 6),
                        td.sampled_link, atol=1e-6)
-    assert np.allclose(mico.sample_links(np.tile(np.expand_dims(td.joint_angles, 0), (5, 1)), 6),
+    assert np.allclose(mico.sample_links(ivy.array(np.tile(np.expand_dims(td.joint_angles, 0), (5, 1))), 6),
                        np.tile(np.expand_dims(td.sampled_link, 0), (5, 1, 1, 1)), atol=1e-6)
     ivy.unset_backend()
