@@ -164,8 +164,8 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     # learnable parameters
     drone_start_pose = ivy.astype(ivy.array(sim.drone_start_pose), 'float32')
     target_pose = ivy.astype(ivy.array(sim.drone_target_pose), 'float32')
-    learnable_anchor_vals = ivy.variable(ivy.astype(ivy.permute_dims(ivy.linspace(
-        drone_start_pose, target_pose, 2 + num_anchors)[..., 1:-1], axes=(1, 0)), 'float32'))
+    learnable_anchor_vals = ivy.astype(ivy.permute_dims(ivy.linspace(
+        drone_start_pose, target_pose, 2 + num_anchors)[..., 1:-1], axes=(1, 0)), 'float32')
 
     # optimizer
     optimizer = ivy.SGD(lr=lr)
@@ -176,9 +176,14 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     clearance = 0.1
     poses = None
     while colliding and it < 13:
-        total_cost, grads, poses, body_positions, sdf_vals = ivy.execute_with_gradients(
+        func_ret, grads = ivy.execute_with_gradients(
             lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, drone_start_pose, target_pose, query_points, sim),
             ivy.Container({'w': learnable_anchor_vals}))
+        
+        poses = func_ret[1]
+        body_positions = func_ret[2]
+        sdf_vals = func_ret[3]
+
         colliding = ivy.min(sdf_vals) < clearance
         sim.update_path_visualization(body_positions, sdf_vals,
                                       os.path.join(this_dir, 'dsp_no_sim', 'path_{}.png'.format(it)))

@@ -173,8 +173,8 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     # learnable parameters
     robot_start_config = ivy.array(ivy.astype(sim.robot_start_config, 'float32'))
     robot_target_config = ivy.array(ivy.astype(sim.robot_target_config, 'float32'))
-    learnable_anchor_vals = ivy.variable(ivy.astype(ivy.permute_dims(ivy.linspace(
-        robot_start_config, robot_target_config, 2 + num_anchors)[..., 1:-1], (1, 0)), 'float32'))
+    learnable_anchor_vals = ivy.astype(ivy.permute_dims(ivy.linspace(
+        robot_start_config, robot_target_config, 2 + num_anchors)[..., 1:-1], (1, 0)), 'float32')
 
     # optimizer
     optimizer = ivy.SGD(lr=lr)
@@ -185,9 +185,14 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     clearance = 0
     joint_query_vals = None
     while colliding and it < 11:
-        total_cost, grads, joint_query_vals, link_positions, sdf_vals = ivy.execute_with_gradients(
+        func_ret, grads = ivy.execute_with_gradients(
             lambda xs: compute_cost_and_sdfs(xs['w'], anchor_points, robot_start_config, robot_target_config,
                                              query_points, sim), ivy.Container({'w': learnable_anchor_vals}))
+
+        joint_query_vals = func_ret[1]
+        link_positions = func_ret[2]
+        sdf_vals = func_ret[3]
+
         colliding = ivy.min(sdf_vals[2:]) < clearance
         sim.update_path_visualization(link_positions, sdf_vals,
                                       os.path.join(this_dir, 'msp_no_sim', 'path_{}.png'.format(it)))
