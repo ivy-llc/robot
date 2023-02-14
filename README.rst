@@ -46,7 +46,7 @@ Contents
 * `Overview`_
 * `Run Through`_
 * `Interactive Demos`_
-* `Get Involed`_
+* `Get Involved`_
 
 Overview
 --------
@@ -462,8 +462,8 @@ making use of functions ``ivy_robot.sample_spline_path`` and ``ivy_robot.Manipul
         <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_b.gif?raw=true'>
     </p>
 
-Get Involed
------------
+Get Involved
+------------
 
 We hope the functions in this library are useful to a wide range of machine learning developers.
 However, there are many more areas of gradient-based motion planning and broader robotics
