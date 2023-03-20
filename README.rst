@@ -275,7 +275,7 @@ However, for simplicitly we fix the z translation and 3DOF rotation to zeros in 
 
 The interpolated xy positions and anchor positions from the path are shown below in the x-y plane.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/partial_source/images/interpolated_drone_poses.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/master/docs/images/interpolated_drone_poses.png?raw=true
    :width: 100%
 
 **Rigid Mobile Class**
@@ -350,7 +350,7 @@ The sampled drone body xy positions during motion are shown below in the x-y pla
 By tracing the body points for each of the four corners of the drone,
 we can see how the drone performs the 180 degree self-rotation about the z-axis during the motion.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/partial_source/images/sampled_drone_body_positions.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/master/docs/images/sampled_drone_body_positions.png?raw=true
    :width: 100%
 
 **Manipulator Class**
@@ -405,7 +405,7 @@ a forward reaching motion in the positive x direction.
 
 The interpolated joint angles are presented below.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/partial_source/images/interpolated_manipulator_joint_angles.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/master/docs/images/interpolated_manipulator_joint_angles.png?raw=true
    :width: 100%
 
 In a similar fashion to how the drone body was sampled in the previous example,
@@ -423,7 +423,7 @@ we next use these interpolated joint angles to sample the link positions for the
 
 we show the sampled link positions during the course of the forward reaching motion in the x-y plane below.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/partial_source/images/sampled_manipulator_links.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/master/docs/images/sampled_manipulator_links.png?raw=true
    :width: 100%
 
 Interactive Demos
