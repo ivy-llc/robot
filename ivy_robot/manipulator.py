@@ -133,7 +133,7 @@ class Manipulator:
         """
 
         if batch_shape is None:
-            batch_shape = joint_angles.shape[:-1]
+            batch_shape = joint_angles.cont_shape[:-1] if isinstance(joint_angles, ivy.Container) else joint_angles.shape[:-1]
         batch_shape = list(batch_shape)
         num_batch_dims = len(batch_shape)
 
@@ -224,7 +224,7 @@ class Manipulator:
         """
 
         if batch_shape is None:
-            batch_shape = joint_angles.shape[:-1]
+            batch_shape = joint_angles.cont_shape[:-1] if isinstance(joint_angles, ivy.Container) else joint_angles.shape[:-1]
         batch_shape = list(batch_shape)
 
         # BS x LN x 4 x 4
@@ -260,7 +260,7 @@ class Manipulator:
         if link_num is None:
             link_num = self._num_joints
         if batch_shape is None:
-            batch_shape = joint_angles.shape[:-1]
+            batch_shape = joint_angles.cont_shape[:-1] if isinstance(joint_angles, ivy.Container) else joint_angles.shape[:-1]
         batch_shape = list(batch_shape)
         num_batch_dims = len(batch_shape)
         batch_dims_for_trans = list(range(num_batch_dims))

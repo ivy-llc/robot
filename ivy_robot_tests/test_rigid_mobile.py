@@ -36,4 +36,4 @@ def test_sample_body(dev_str, fw):
                        td.sampled_body, atol=1e-6)
     assert np.allclose(mico.sample_body(np.tile(np.expand_dims(td.inv_ext_mat, 0), (5, 1, 1))),
                        np.tile(np.expand_dims(td.sampled_body, 0), (5, 1, 1)), atol=1e-6)
-    ivy.unset_backend()
+    ivy.previous_backend()

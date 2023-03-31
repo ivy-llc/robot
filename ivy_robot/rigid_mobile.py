@@ -47,7 +47,7 @@ class RigidMobile:
         """
 
         if batch_shape is None:
-            batch_shape = inv_ext_mats.shape[:-2]
+            batch_shape = inv_ext_mats.cont_shape[:-2] if isinstance(inv_ext_mats, ivy.Container) else inv_ext_mats.shape[:-2]
         batch_shape = list(batch_shape)
 
         # (BSx3) x NBP

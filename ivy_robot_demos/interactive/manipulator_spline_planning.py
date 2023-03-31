@@ -200,7 +200,7 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
         it += 1
     sim.execute_motion(joint_query_vals)
     sim.close()
-    ivy.unset_backend()
+    ivy.previous_backend()
 
 
 if __name__ == '__main__':
