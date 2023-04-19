@@ -40,7 +40,7 @@ def _fit_spline(train_points, train_values, order):
     batch_shape = list(train_points_shape[:-2])
     num_batch_dims = len(batch_shape)
     n = train_points_shape[-2]
-    pd = train_values.shape[-1]
+    pd = train_values.cont_shape[-1] if isinstance(train_values, ivy.Container) else train_values.shape[-1]
 
     # BS x N x 1
     c = train_points
