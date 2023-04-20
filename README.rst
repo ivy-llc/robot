@@ -77,10 +77,12 @@ neural memory, pre-trained models + implementations, and builder tools with trai
 .. raw:: html
 
     <div style="display: block;">
-        <picture>
-            <source width="15%" style="float: left; margin: 0% 5%; media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
-            <img alt="Text changing depending on mode. Light: 'So light!' Dark: 'So dark!'" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
-        </picture>
+        <a href="https://github.com/unifyai/mech">
+            <picture>
+                <source width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
+                <img width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+            </picture>
+        </a>
         <a href="https://github.com/unifyai/vision">
             <img width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
         </a>
