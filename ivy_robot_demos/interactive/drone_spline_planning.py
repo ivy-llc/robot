@@ -32,14 +32,14 @@ class Simulator(BaseSimulator):
                 self._vision_sensors[i].remove()
                 self._vision_sensor_bodies[i].remove()
                 [ray.remove() for ray in self._vision_sensor_rays[i]]
-            drone_start_pos = np.array([-1.15, -1.028, 0.6])
-            target_pos = np.array([1.025, 1.125, 0.6])
+            drone_start_pos = ivy.array([-1.15, -1.028, 0.6])
+            target_pos = ivy.array([1.025, 1.125, 0.6])
             self._drone.set_position(drone_start_pos)
-            self._drone.set_orientation(np.array([-90, 50, -180])*np.pi/180)
+            self._drone.set_orientation(ivy.array([-90, 50, -180])*ivy.pi/180)
             self._target.set_position(target_pos)
-            self._target.set_orientation(np.array([-90, 50, -180])*np.pi/180)
-            self._default_camera.set_position(np.array([-3.2835, -0.88753, 1.3773]))
-            self._default_camera.set_orientation(np.array([-151.07, 70.079, -120.45])*np.pi/180)
+            self._target.set_orientation(ivy.array([-90, 50, -180])*ivy.pi/180)
+            self._default_camera.set_position(ivy.array([-3.2835, -0.88753, 1.3773]))
+            self._default_camera.set_orientation(ivy.array([-151.07, 70.079, -120.45])*ivy.pi/180)
 
             input('\nScene initialized.\n\n'
                   'The simulator visualizer can be translated and rotated by clicking either the left mouse button or the wheel, '
