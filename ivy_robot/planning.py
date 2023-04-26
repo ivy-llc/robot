@@ -8,13 +8,13 @@ import ivy
 # Helpers #
 # --------#
 
-def _pairwise_distance(x, y):
 
+def _pairwise_distance(x, y):
     # BS x NX x 1 x 1
     try:
         x = ivy.expand_dims(x, axis=-2)
     except:
-        d = 0
+        pass
 
     # BS x 1 x NY x 1
     y = ivy.expand_dims(y, axis=-3)
@@ -24,7 +24,7 @@ def _pairwise_distance(x, y):
 
 
 def _phi(r, order):
-    eps = ivy.array([1e-6], dtype='float32')
+    eps = ivy.array([1e-6], dtype="float32")
     if order % 2 == 0:
         r = ivy.maximum(r, eps)
         return 0.5 * (r ** (0.5 * order)) * ivy.log(r)
@@ -34,7 +34,6 @@ def _phi(r, order):
 
 
 def _fit_spline(train_points, train_values, order):
-
     # shapes
     train_points_shape = train_points.shape
     batch_shape = list(train_points_shape[:-2])
@@ -59,7 +58,10 @@ def _fit_spline(train_points, train_values, order):
     matrix_b = ivy.concat([c, ones], axis=-1)
 
     # BS x 2 x N
-    matrix_b_trans = ivy.permute_dims(matrix_b, axes=list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims])
+    matrix_b_trans = ivy.permute_dims(
+        matrix_b,
+        axes=list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims],
+    )
 
     # BS x N+2 x N
     left_block = ivy.concat([matrix_a, matrix_b_trans], axis=-2)
@@ -89,12 +91,13 @@ def _fit_spline(train_points, train_values, order):
     v = w_v[..., n:, :]
 
     # BS x N x PD,    BS x 2 x PD
-    print(w,v)
+    print(w, v)
     return w, v
 
 
 # Public #
 # -------#
+
 
 def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
     """Sample spline path, given sample locations for path defined by the anchor
@@ -138,7 +141,9 @@ def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
     # Polynomial / linear term.
 
     # BS x NS x 2
-    query_points_pad = ivy.concat([sample_points, ivy.ones_like(sample_points[..., :1])], axis=-1)
+    query_points_pad = ivy.concat(
+        [sample_points, ivy.ones_like(sample_points[..., :1])], axis=-1
+    )
 
     # BS x NS x PD
     linear_term = ivy.matmul(query_points_pad, v)

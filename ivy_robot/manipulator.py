@@ -2,16 +2,23 @@
 
 # global
 import ivy
-import math 
-import ivy_mech 
+import math
+import ivy_mech
 
 MIN_DENOMINATOR = 1e-12
 
 
 # noinspection PyUnresolvedReferences
 class Manipulator:
-
-    def __init__(self, a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat=None):
+    def __init__(
+        self,
+        a_s,
+        d_s,
+        alpha_s,
+        dh_joint_scales,
+        dh_joint_offsets,
+        base_inv_ext_mat=None,
+    ):
         """Initialize robot manipulator instance
 
         Parameters
@@ -55,13 +62,13 @@ class Manipulator:
         # repeated blocks
 
         # 1 x 1 x 3
-        start_of_top_row = ivy.array([[[1., 0., 0.]]])
+        start_of_top_row = ivy.array([[[1.0, 0.0, 0.0]]])
 
         # 1 x 1 x 1
         zeros = ivy.zeros((1, 1, 1))
 
         # 1 x 1 x 4
-        bottom_row = ivy.array([[[0., 0., 0., 1.]]])
+        bottom_row = ivy.array([[[0.0, 0.0, 0.0, 1.0]]])
 
         for i in range(self._num_joints):
             # 1 x 1 x 1
@@ -72,10 +79,14 @@ class Manipulator:
             # 1 x 1 x 4
             top_row = ivy.concat((start_of_top_row, a_i), axis=-1)
             top_middle_row = ivy.concat((zeros, cos_alpha, -sin_alpha, zeros), axis=-1)
-            bottom_middle_row = ivy.concat((zeros, sin_alpha, cos_alpha, zeros), axis=-1)
+            bottom_middle_row = ivy.concat(
+                (zeros, sin_alpha, cos_alpha, zeros), axis=-1
+            )
 
             # 1 x 4 x 4
-            AidashtoAi = ivy.concat((top_row, top_middle_row, bottom_middle_row, bottom_row), axis=1)
+            AidashtoAi = ivy.concat(
+                (top_row, top_middle_row, bottom_middle_row, bottom_row), axis=1
+            )
 
             # list
             AidashtoAis_list.append(AidashtoAi)
@@ -90,20 +101,15 @@ class Manipulator:
         # page 111 - 113
 
         # 1 x 3
-        self._z0 = ivy.array([[0],
-                                  [0],
-                                  [1]])
+        self._z0 = ivy.array([[0], [0], [1]])
 
         # 1 x 4
-        self._p0hat = ivy.array([[0],
-                                     [0],
-                                     [0],
-                                     [1]])
+        self._p0hat = ivy.array([[0], [0], [0], [1]])
 
         # link lengths
 
         # NJ
-        self._link_lengths = (a_s ** 2 + d_s ** 2) ** 0.5
+        self._link_lengths = (a_s**2 + d_s**2) ** 0.5
 
     # Public Manipulator Kinematics Functions #
 
@@ -139,9 +145,11 @@ class Manipulator:
 
         # BS x 1 x NJ
         try:
-            dh_joint_angles = ivy.expand_dims(joint_angles * self._dh_joint_scales - self._dh_joint_offsets, axis=-2)
+            dh_joint_angles = ivy.expand_dims(
+                joint_angles * self._dh_joint_scales - self._dh_joint_offsets, axis=-2
+            )
         except:
-            d = 0
+            pass
 
         # BS x 1 x 4 x 4
         A00 = ivy.eye(4, batch_shape=batch_shape + [1])
@@ -153,33 +161,52 @@ class Manipulator:
         # repeated blocks
 
         # BS x 1 x NJ
-        dis = ivy.tile(ivy.reshape(self._dis, [1] * num_batch_dims + [1, self._num_joints]),
-                           batch_shape + [1, 1])
+        dis = ivy.tile(
+            ivy.reshape(self._dis, [1] * num_batch_dims + [1, self._num_joints]),
+            batch_shape + [1, 1],
+        )
 
         # BS x 1 x 4
         bottom_row = ivy.tile(
-            ivy.reshape(ivy.array([0., 0., 0., 1.]), [1] * num_batch_dims + [1, 4]),
-            batch_shape + [1, 1])
+            ivy.reshape(ivy.array([0.0, 0.0, 0.0, 1.0]), [1] * num_batch_dims + [1, 4]),
+            batch_shape + [1, 1],
+        )
 
         # BS x 1 x 3
         start_of_bottom_middle = ivy.tile(
-            ivy.reshape(ivy.array([0., 0., 1.]), [1] * num_batch_dims + [1, 3]),
-            batch_shape + [1, 1])
+            ivy.reshape(ivy.array([0.0, 0.0, 1.0]), [1] * num_batch_dims + [1, 3]),
+            batch_shape + [1, 1],
+        )
 
         # BS x 1 x 2
         zeros = ivy.zeros(batch_shape + [1, 2])
 
         for i in range(self._num_joints):
-
             # BS x 1 x 4
-            top_row = ivy.concat((ivy.cos(dh_joint_angles[..., i:i + 1]),
-                                           -ivy.sin(dh_joint_angles[..., i:i + 1]), zeros), axis=-1)
-            top_middle_row = ivy.concat((ivy.sin(dh_joint_angles[..., i:i + 1]),
-                                                  ivy.cos(dh_joint_angles[..., i:i + 1]), zeros), axis=-1)
-            bottom_middle_row = ivy.concat((start_of_bottom_middle, dis[..., i:i + 1]), axis=-1)
+            top_row = ivy.concat(
+                (
+                    ivy.cos(dh_joint_angles[..., i : i + 1]),
+                    -ivy.sin(dh_joint_angles[..., i : i + 1]),
+                    zeros,
+                ),
+                axis=-1,
+            )
+            top_middle_row = ivy.concat(
+                (
+                    ivy.sin(dh_joint_angles[..., i : i + 1]),
+                    ivy.cos(dh_joint_angles[..., i : i + 1]),
+                    zeros,
+                ),
+                axis=-1,
+            )
+            bottom_middle_row = ivy.concat(
+                (start_of_bottom_middle, dis[..., i : i + 1]), axis=-1
+            )
 
             # BS x 4 x 4
-            Aitoip1dash = ivy.concat((top_row, top_middle_row, bottom_middle_row, bottom_row), axis=-2)
+            Aitoip1dash = ivy.concat(
+                (top_row, top_middle_row, bottom_middle_row, bottom_row), axis=-2
+            )
 
             # (BSx4) x 4
             Aitoip1dash_flat = ivy.reshape(Aitoip1dash, (-1, 4))
@@ -202,7 +229,10 @@ class Manipulator:
                 # BS x LN x 4 x 4
                 return ivy.concat(A0is, axis=-3)
 
-        raise Exception('wrong parameter entered for link_num, please enter integer from 1-' + str(self._num_joints))
+        raise Exception(
+            "wrong parameter entered for link_num, please enter integer from 1-"
+            + str(self._num_joints)
+        )
 
     def compute_link_poses(self, joint_angles, link_num, batch_shape=None):
         """Compute rotation vector poses for link_num of links, starting from link 0.
@@ -235,7 +265,9 @@ class Manipulator:
 
     # Link sampling #
 
-    def sample_links(self, joint_angles, link_num=None, samples_per_metre=25, batch_shape=None):
+    def sample_links(
+        self, joint_angles, link_num=None, samples_per_metre=25, batch_shape=None
+    ):
         """Sample links of the robot at uniformly distributed cartesian positions.
 
         Parameters
@@ -276,22 +308,24 @@ class Manipulator:
         segment_ends = link_positions[..., 1:, :]
 
         # LN
-        segment_sizes = ivy.astype(ivy.ceil(
-            self._link_lengths[0:link_num] * samples_per_metre), 'int32')
+        segment_sizes = ivy.astype(
+            ivy.ceil(self._link_lengths[0:link_num] * samples_per_metre), "int32"
+        )
 
         # list of segments
         segments_list = list()
 
         for link_idx in range(link_num):
-
             segment_size = segment_sizes[link_idx]
 
             # BS x 1 x 3
-            segment_start = segment_starts[..., link_idx:link_idx + 1, :]
-            segment_end = segment_ends[..., link_idx:link_idx + 1, :]
+            segment_start = segment_starts[..., link_idx : link_idx + 1, :]
+            segment_end = segment_ends[..., link_idx : link_idx + 1, :]
 
             # BS x segment_size x 3
-            segment = ivy.linspace(segment_start, segment_end, segment_size, axis=-2)[..., 0, :, :]
+            segment = ivy.linspace(segment_start, segment_end, segment_size, axis=-2)[
+                ..., 0, :, :
+            ]
             if link_idx == link_num - 1 or segment_size == 1:
                 segments_list.append(segment)
             else:
@@ -304,20 +338,27 @@ class Manipulator:
         all_segments_homo = ivy_mech.make_coordinates_homogeneous(all_segments)
 
         # 4 x BSxtotal_robot_chain_length
-        all_segments_homo_trans = ivy.reshape(ivy.permute_dims(
-            all_segments_homo, axes=[num_batch_dims + 1] + batch_dims_for_trans + [num_batch_dims]), (4, -1))
+        all_segments_homo_trans = ivy.reshape(
+            ivy.permute_dims(
+                all_segments_homo,
+                axes=[num_batch_dims + 1] + batch_dims_for_trans + [num_batch_dims],
+            ),
+            (4, -1),
+        )
 
         # 3 x BSxtotal_robot_chain_length
-        transformed_trans = ivy.matmul(self._base_inv_ext_mat[..., 0:3, :], all_segments_homo_trans)
+        transformed_trans = ivy.matmul(
+            self._base_inv_ext_mat[..., 0:3, :], all_segments_homo_trans
+        )
 
         # BS x total_robot_chain_length x 3
-        return ivy.permute_dims(ivy.reshape(
-            transformed_trans, [3] + batch_shape + [-1]),
-            axes=[i+1 for i in batch_dims_for_trans] + [num_batch_dims+1] + [0])
+        return ivy.permute_dims(
+            ivy.reshape(transformed_trans, [3] + batch_shape + [-1]),
+            axes=[i + 1 for i in batch_dims_for_trans] + [num_batch_dims + 1] + [0],
+        )
 
 
 class MicoManipulator(Manipulator):
-
     def __init__(self, base_inv_ext_mat=None):
         """Initialize Kinova Mico robot manipulator instance. Denavit–Hartenberg
         parameters inferred from KINOVA_MICO_Robotic_arm_user_guide.pdf Joint scales
@@ -360,22 +401,27 @@ class MicoManipulator(Manipulator):
 
         a_s = ivy.array([0, d2, 0, 0, 0, 0])
         d_s = ivy.array([d1, 0, -e2, -d4b, -d5b, -d6b])
-        alpha_s = ivy.array([math.pi / 2, math.pi, math.pi / 2, 2 * aa, 2 * aa, math.pi])
+        alpha_s = ivy.array(
+            [math.pi / 2, math.pi, math.pi / 2, 2 * aa, 2 * aa, math.pi]
+        )
 
         # dh joint angles convention based on:
         # JACO²-6DOF-Advanced-Specification-Guide.pdf
         # (Unable to find Mico version, but Jaco convention is the same)
         # page 10
 
-        dh_joint_scales = ivy.array([-1., 1., 1., 1., 1., 1.])
-        dh_joint_offsets = ivy.array([0., math.pi / 2, -math.pi / 2, 0., math.pi, -math.pi / 2])
+        dh_joint_scales = ivy.array([-1.0, 1.0, 1.0, 1.0, 1.0, 1.0])
+        dh_joint_offsets = ivy.array(
+            [0.0, math.pi / 2, -math.pi / 2, 0.0, math.pi, -math.pi / 2]
+        )
 
         # call constructor
-        super().__init__(a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat)
+        super().__init__(
+            a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat
+        )
 
 
 class PandaManipulator(Manipulator):
-
     def __init__(self, base_inv_ext_mat=None):
         """Initialize FRANKA EMIKA Panda robot manipulator instance.
             Denavit–Hartenberg parameters inferred from FRANKA EMIKA online API.
@@ -392,11 +438,22 @@ class PandaManipulator(Manipulator):
         # panda_DH_params.png
         # taken from https://frankaemika.github.io/docs/control_parameters.html
 
-        a_s = ivy.array([0., 0., 0.0825, -0.0825, 0., 0.088, 0.])
-        d_s = ivy.array([0.333, 0., 0.316, 0., 0.384, 0., 0.107])
+        a_s = ivy.array([0.0, 0.0, 0.0825, -0.0825, 0.0, 0.088, 0.0])
+        d_s = ivy.array([0.333, 0.0, 0.316, 0.0, 0.384, 0.0, 0.107])
         alpha_s = ivy.array(
-            [-math.pi / 2, math.pi / 2, math.pi / 2, -math.pi / 2, math.pi / 2, math.pi / 2, 0.])
+            [
+                -math.pi / 2,
+                math.pi / 2,
+                math.pi / 2,
+                -math.pi / 2,
+                math.pi / 2,
+                math.pi / 2,
+                0.0,
+            ]
+        )
         dh_joint_scales = ivy.ones((7,))
         dh_joint_offsets = ivy.zeros((7,))
 
-        super().__init__(a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat)
+        super().__init__(
+            a_s, d_s, alpha_s, dh_joint_scales, dh_joint_offsets, base_inv_ext_mat
+        )

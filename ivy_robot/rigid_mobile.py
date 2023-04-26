@@ -8,7 +8,6 @@ MIN_DENOMINATOR = 1e-12
 
 
 class RigidMobile:
-
     def __init__(self, rel_body_points):
         """Initialize rigid mobile robot instance
 
@@ -20,8 +19,9 @@ class RigidMobile:
         """
 
         # 4 x NBP
-        self._rel_body_points_homo_trans =\
-            ivy.swapaxes(ivy_mech.make_coordinates_homogeneous(rel_body_points), 0, 1)
+        self._rel_body_points_homo_trans = ivy.swapaxes(
+            ivy_mech.make_coordinates_homogeneous(rel_body_points), 0, 1
+        )
 
     # Public Methods #
     # ---------------#
@@ -51,7 +51,12 @@ class RigidMobile:
         batch_shape = list(batch_shape)
 
         # (BSx3) x NBP
-        body_points_trans = ivy.matmul(ivy.reshape(ivy.array(inv_ext_mats), (-1, 4)), self._rel_body_points_homo_trans)
+        body_points_trans = ivy.matmul(
+            ivy.reshape(ivy.array(inv_ext_mats), (-1, 4)),
+            self._rel_body_points_homo_trans,
+        )
 
         # BS x NBP x 3
-        return ivy.swapaxes(ivy.reshape(body_points_trans, batch_shape + [3, -1]), -1, -2)
+        return ivy.swapaxes(
+            ivy.reshape(body_points_trans, batch_shape + [3, -1]), -1, -2
+        )
