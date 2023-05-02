@@ -59,19 +59,29 @@ class Simulator(BaseSimulator):
 
             input(
                 "\nScene initialized.\n\n"
-                "The simulator visualizer can be translated and rotated by clicking either the left mouse button or the wheel, "
+                "The simulator visualizer can be translated and "
+                "rotated by clicking either the left mouse button or the wheel, "
                 "and then dragging the mouse.\n"
                 "Scrolling the mouse wheel zooms the view in and out.\n\n"
-                "You can click on any object either in the scene or the left hand panel, "
-                "then select the box icon with four arrows in the top panel of the simulator, "
+                "You can click on any object either in the scene or "
+                "the left hand panel, "
+                "then select the box icon with four arrows in the "
+                "top panel of the simulator, "
                 "and then drag the object around dynamically.\n"
-                "Starting to drag and then holding ctrl allows you to also drag the object up and down.\n"
-                "Clicking the top icon with a box and two rotating arrows similarly allows rotation of the object.\n\n"
-                "The joint angles of either the robot or target robot configuration can also be changed.\n"
-                'To do this, Open the Mico or MicoTarget drop-downs on the left, and click on one of the joints "Mico_jointx", '
-                "and then click on the magnifying glass over a box on the left-most panel.\n"
-                "In the window that opens, change the value in the field Position [deg], and close the window again.\n\n"
-                "Once you have aranged the scene as desired, press enter in the terminal to continue with the demo...\n"
+                "Starting to drag and then holding ctrl allows you "
+                "to also drag the object up and down.\n"
+                "Clicking the top icon with a box and two rotating "
+                "arrows similarly allows rotation of the object.\n\n"
+                "The joint angles of either the robot or target robot "
+                "configuration can also be changed.\n"
+                "To do this, Open the Mico or MicoTarget drop-downs "
+                'on the left, and click on one of the joints "Mico_jointx", '
+                "and then click on the magnifying glass over a box "
+                "on the left-most panel.\n"
+                "In the window that opens, change the value "
+                "in the field Position [deg], and close the window again.\n\n"
+                "Once you have aranged the scene as desired, "
+                "press enter in the terminal to continue with the demo...\n"
             )
 
             # primitive scene
@@ -114,9 +124,12 @@ class Simulator(BaseSimulator):
 
             # wait for user input
             self._user_prompt(
-                "\nInitialized scene with a robot and a target robot configuration to reach."
-                "\nPress enter in the terminal to use method ivy_robot.interpolate_spline_points "
-                "to plan a spline path which reaches the target configuration whilst avoiding the objects in the scene...\n"
+                "\nInitialized scene with a robot and "
+                "a target robot configuration to reach."
+                "\nPress enter in the terminal to use "
+                "method ivy_robot.interpolate_spline_points "
+                "to plan a spline path which reaches the "
+                "target configuration whilst avoiding the objects in the scene...\n"
             )
 
         else:
@@ -139,9 +152,13 @@ class Simulator(BaseSimulator):
 
             # message
             print(
-                "\nInitialized dummy scene with a robot and a target robot configuration to reach."
-                "\nClose the visualization window to use method ivy_robot.interpolate_spline_points "
-                "to plan a spline path which reaches the target configuration whilst avoiding the objects in the scene...\n"
+                "\nInitialized dummy scene with a robot "
+                "and a target robot configuration to reach."
+                "\nClose the visualization window to use "
+                "method ivy_robot.interpolate_spline_points "
+                "to plan a spline path which reaches the "
+                "target configuration whilst avoiding the objects "
+                "in the scene...\n"
             )
 
             # plot scene before rotation
@@ -269,14 +286,15 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
     while colliding and it < 11:
         func_ret, grads = ivy.execute_with_gradients(
             lambda xs: compute_cost_and_sdfs(
-                xs["w"],
+                xs,
                 anchor_points,
                 robot_start_config,
                 robot_target_config,
                 query_points,
                 sim,
             ),
-            ivy.Container({"w": learnable_anchor_vals}),
+            learnable_anchor_vals,
+            ret_grad_idxs=["0"],
         )
 
         joint_query_vals = func_ret[1]
@@ -289,9 +307,7 @@ def main(interactive=True, try_use_sim=True, f=None, fw=None):
             sdf_vals,
             os.path.join(this_dir, "msp_no_sim", "path_{}.png".format(it)),
         )
-        learnable_anchor_vals = optimizer.step(
-            ivy.Container({"w": learnable_anchor_vals}), grads
-        )["w"]
+        learnable_anchor_vals = optimizer.step(learnable_anchor_vals, grads["0"])
         it += 1
     sim.execute_motion(joint_query_vals)
     sim.close()
