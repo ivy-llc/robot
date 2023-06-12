@@ -19,7 +19,8 @@ class Manipulator:
         dh_joint_offsets,
         base_inv_ext_mat=None,
     ):
-        """Initialize robot manipulator instance
+        """
+        Initialize robot manipulator instance
 
         Parameters
         ----------
@@ -37,7 +38,6 @@ class Manipulator:
             Inverse extrinsic matrix of the robot base *[4,4]*
 
         """
-
         self._num_joints = a_s.shape[-1]
         # ToDo: incorporate the base_inv_ext_mat more elegantly, instead of the hack
         #  as in the sample_links method
@@ -97,7 +97,8 @@ class Manipulator:
         # Constant Jacobian Params
 
         # Using same nomenclature as in:
-        # Modelling, Planning and Control. Bruno Siciliano, Lorenzo Sciavicco, Luigi Villani, Giuseppe Oriolo
+        # Modelling, Planning and Control. Bruno Siciliano, Lorenzo Sciavicco,
+        # Luigi Villani, Giuseppe Oriolo
         # page 111 - 113
 
         # 1 x 3
@@ -137,7 +138,6 @@ class Manipulator:
             The link_num matrices, up the link_num *[batch_shape,link_num,4,4]*
 
         """
-
         if batch_shape is None:
             batch_shape = joint_angles.shape[:-1]
         batch_shape = list(batch_shape)
@@ -148,7 +148,7 @@ class Manipulator:
             dh_joint_angles = ivy.expand_dims(
                 joint_angles * self._dh_joint_scales - self._dh_joint_offsets, axis=-2
             )
-        except:
+        except Exception:
             pass
 
         # BS x 1 x 4 x 4
@@ -252,7 +252,6 @@ class Manipulator:
             The link_num poses, up the link_num *[batch_shape,link_num,6]*
 
         """
-
         if batch_shape is None:
             batch_shape = joint_angles.shape[:-1]
         batch_shape = list(batch_shape)
@@ -288,7 +287,6 @@ class Manipulator:
             *[batch_shape,total_sampling_chain_length,3]*
 
         """
-
         if link_num is None:
             link_num = self._num_joints
         if batch_shape is None:
@@ -326,6 +324,8 @@ class Manipulator:
             segment = ivy.linspace(segment_start, segment_end, segment_size, axis=-2)[
                 ..., 0, :, :
             ]
+            if ivy.current_backend_str() == "torch" and segment.shape[-2] == 3:
+                segment = ivy.swapaxes(segment, -2, -1)
             if link_idx == link_num - 1 or segment_size == 1:
                 segments_list.append(segment)
             else:
@@ -371,7 +371,6 @@ class MicoManipulator(Manipulator):
             Inverse extrinsic matrix of the robot base *[3,4]*
 
         """
-
         # length params
         # KINOVA_MICO_Robotic_arm_user_guide.pdf
         # page 50
@@ -433,7 +432,6 @@ class PandaManipulator(Manipulator):
             Inverse extrinsic matrix of the robot base *[3,4]*
 
         """
-
         # dh params
         # panda_DH_params.png
         # taken from https://frankaemika.github.io/docs/control_parameters.html
