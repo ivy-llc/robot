@@ -17,7 +17,6 @@ class RigidMobile:
             Relative body points *[num_body_points,3]*
 
         """
-
         # 4 x NBP
         self._rel_body_points_homo_trans = ivy.swapaxes(
             ivy_mech.make_coordinates_homogeneous(rel_body_points), 0, 1
@@ -45,7 +44,6 @@ class RigidMobile:
             *[batch_shape,num_body_points,3]*
 
         """
-
         if batch_shape is None:
             batch_shape = inv_ext_mats.shape[:-2]
         batch_shape = list(batch_shape)
