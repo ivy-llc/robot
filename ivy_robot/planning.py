@@ -1,5 +1,7 @@
-"""Spline path sampling functions, useful for differentiable continuous robot path
-planning. """
+"""
+Spline path sampling functions, useful for differentiable continuous robot path
+planning. 
+"""
 
 # global
 import ivy
@@ -13,7 +15,7 @@ def _pairwise_distance(x, y):
     # BS x NX x 1 x 1
     try:
         x = ivy.expand_dims(x, axis=-2)
-    except:
+    except Exception:
         pass
 
     # BS x 1 x NY x 1
@@ -100,7 +102,8 @@ def _fit_spline(train_points, train_values, order):
 
 
 def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
-    """Sample spline path, given sample locations for path defined by the anchor
+    """
+    Sample spline path, given sample locations for path defined by the anchor
     locations and points. `[reference]
     <https://github.com/tensorflow/addons/blob/v0.11.2/tensorflow_addons/image
     /interpolate_spline.py>`_
@@ -125,7 +128,6 @@ def sample_spline_path(anchor_points, anchor_vals, sample_points, order=3):
         *[batch_shape,num_samples,path_dim]*
 
     """
-
     # BS x N x PD,    BS x 2 x PD
     w, v = _fit_spline(anchor_points, anchor_vals, order)
 

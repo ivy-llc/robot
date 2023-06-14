@@ -15,7 +15,8 @@ class MicoTestData:
     def __init__(self):
         # link matrix extraction
 
-        # Generated using random joint angles in CoppeliaSim scene with robot model queried directly for matrices
+        # Generated using random joint angles in CoppeliaSim scene
+        # with robot model queried directly for matrices
         self.joint_angles = np.array(
             [
                 -0.3202435076236725,
@@ -241,7 +242,8 @@ def test_compute_mico_link_matrices(dev_str, fw):
 
 def test_sample_mico_links(dev_str, fw):
     if fw == "tensorflow_graph":
-        # the need to dynamically infer array shapes makes this only valid in eager mode currently
+        # the need to dynamically infer array shapes
+        # makes this only valid in eager mode currently
         pytest.skip()
     ivy.set_backend(fw)
     mico = MicoManipulator()
