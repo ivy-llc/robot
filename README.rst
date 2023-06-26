@@ -217,8 +217,7 @@ and use this to set the ivy backend framework.
 .. code-block:: python
 
     import ivy
-    from ivy_demo_utils.framework_utils import choose_random_framework
-    ivy.set_framework(choose_random_framework())
+    ivy.set_backend(ivy.choose_random_backend())
 
 **Spline Planning**
 
@@ -249,24 +248,24 @@ However, for simplicitly we fix the z translation and 3DOF rotation to zeros in 
     # as 6DOF poses
 
     # 1 x 6
-    start_pose = ivy.concatenate((start_xy, constant_z, constant_rot_vec), -1)
-    anchor1_pose = ivy.concatenate((anchor1_xy, constant_z, constant_rot_vec), -1)
-    anchor2_pose = ivy.concatenate((anchor2_xy, constant_z, constant_rot_vec), -1)
-    anchor3_pose = ivy.concatenate((anchor3_xy, constant_z, constant_rot_vec), -1)
-    target_pose = ivy.concatenate((target_xy, constant_z, constant_rot_vec), -1)
+    start_pose = ivy.concat((start_xy, constant_z, constant_rot_vec), axis=-1)
+    anchor1_pose = ivy.concat((anchor1_xy, constant_z, constant_rot_vec), axis=-1)
+    anchor2_pose = ivy.concat((anchor2_xy, constant_z, constant_rot_vec), axis=-1)
+    anchor3_pose = ivy.concat((anchor3_xy, constant_z, constant_rot_vec), axis=-1)
+    target_pose = ivy.concat((target_xy, constant_z, constant_rot_vec), axis=-1)
 
     num_anchors = num_free_anchors + 2
 
     # num_anchors x 6
-    anchor_poses = ivy.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
+    anchor_poses = ivy.concat((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), axis=0)
 
     # uniform sampling for spline
 
     # num_anchors x 1
-    anchor_points = ivy.expand_dims(ivy.linspace(0., 1., num_anchors), -1)
+    anchor_points = ivy.expand_dims(ivy.linspace(0., 1., num_anchors), axis=-1)
 
     # num_samples x 1
-    query_points = ivy.expand_dims(ivy.linspace(0., 1., num_samples), -1)
+    query_points = ivy.expand_dims(ivy.linspace(0., 1., num_samples), axis=-1)
 
     # interpolated spline poses
 
@@ -324,14 +323,14 @@ but this time with a self-rotation of 180 degrees about the z-axis.
     # as 6DOF poses
 
     # 1 x 6
-    start_pose = ivy.concatenate((start_xy, constant_z, start_rot_vec), -1)
-    anchor1_pose = ivy.concatenate((anchor1_xy, constant_z, anchor1_rot_vec), -1)
-    anchor2_pose = ivy.concatenate((anchor2_xy, constant_z, anchor2_rot_vec), -1)
-    anchor3_pose = ivy.concatenate((anchor3_xy, constant_z, anchor3_rot_vec), -1)
-    target_pose = ivy.concatenate((target_xy, constant_z, target_rot_vec), -1)
+    start_pose = ivy.concat((start_xy, constant_z, start_rot_vec), axis=-1)
+    anchor1_pose = ivy.concat((anchor1_xy, constant_z, anchor1_rot_vec), axis=-1)
+    anchor2_pose = ivy.concat((anchor2_xy, constant_z, anchor2_rot_vec), axis=-1)
+    anchor3_pose = ivy.concat((anchor3_xy, constant_z, anchor3_rot_vec), axis=-1)
+    target_pose = ivy.concat((target_xy, constant_z, target_rot_vec), axis=-1)
 
     # num_anchors x 6
-    anchor_poses = ivy.concatenate((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), 0)
+    anchor_poses = ivy.concat((start_pose, anchor1_pose, anchor2_pose, anchor3_pose, target_pose), axis=0)
 
     # interpolated spline poses
 
@@ -402,9 +401,9 @@ a forward reaching motion in the positive x direction.
     anchor3_joint_angles = -ivy.array([[0.8, 0.4]])*np.pi/4
 
     # num_anchors x 2
-    anchor_joint_angles = ivy.concatenate(
+    anchor_joint_angles = ivy.concat(
         (start_joint_angles, anchor1_joint_angles, anchor2_joint_angles, anchor3_joint_angles,
-         target_joint_angles), 0)
+         target_joint_angles), axis=0)
 
     # interpolated joint angles
 
