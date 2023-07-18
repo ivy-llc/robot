@@ -113,19 +113,19 @@ long_description = "\n".join(lines)
 
 
 setup(
-    name="ivy-robot",
+    name="ivy_robot",
     version="0.0.0",
-    author="Ivy Team",
-    author_email="ivydl.team@gmail.com",
+    author="Unify",
+    author_email="hello@unify.ai",
     description=(
         "Functions and classes for gradient-based robot motion planning,"
         " written in Ivy."
     ),
     long_description=long_description,
     long_description_content_type="text/x-rst",
-    url="https://lets-unify.ai/robot",
+    url="https://unify.ai/ivy",
     project_urls={
-        "Docs": "https://lets-unify.ai/robot/",
+        "Docs": "https://unify.ai/docs/robot/",
         "Source": "https://github.com/unifyai/robot",
     },
     packages=setuptools.find_packages(),
