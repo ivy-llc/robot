@@ -1,2 +1,2 @@
 ivy
-ivy_mech 
+ivy-mech 
