@@ -114,7 +114,7 @@ long_description = "\n".join(lines)
 
 setup(
     name="ivy-robot",
-    version="1.1.9",
+    version="0.0.0",
     author="Ivy Team",
     author_email="ivydl.team@gmail.com",
     description=(
