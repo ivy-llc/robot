@@ -35,7 +35,7 @@ class RigidMobileTestData:
         )
 
 
-def test_sample_body(dev_str, fw):
+def test_sample_body(device, fw):
     ivy.set_backend(fw)
     td = RigidMobileTestData()
     mico = RigidMobile(ivy.array(td.rel_body_points, dtype="float32"))

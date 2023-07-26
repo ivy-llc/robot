@@ -32,7 +32,7 @@ class SplineTestData:
 td = SplineTestData()
 
 
-def test_spline_interpolation(dev_str, fw):
+def test_spline_interpolation(device, fw):
     ivy.set_backend(fw)
     assert np.allclose(
         ivy_robot.planning.sample_spline_path(

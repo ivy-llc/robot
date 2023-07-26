@@ -220,7 +220,7 @@ class MicoTestData:
 td = MicoTestData()
 
 
-def test_compute_mico_link_matrices(dev_str, fw):
+def test_compute_mico_link_matrices(device, fw):
     ivy.set_backend(fw)
     mico = MicoManipulator()
     assert np.allclose(
@@ -240,7 +240,7 @@ def test_compute_mico_link_matrices(dev_str, fw):
     ivy.previous_backend()
 
 
-def test_sample_mico_links(dev_str, fw):
+def test_sample_mico_links(device, fw):
     if fw == "tensorflow_graph":
         # the need to dynamically infer array shapes
         # makes this only valid in eager mode currently
