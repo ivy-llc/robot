@@ -218,12 +218,11 @@ def compute_cost_and_sdfs(
     return total_cost, poses, body_positions, ivy.reshape(sdf_vals, (-1, 100, 1))
 
 
-def main(interactive=True, try_use_sim=True, f=None, fw=None):
+def main(interactive=True, try_use_sim=True, fw=None):
     # config
     this_dir = os.path.dirname(os.path.realpath(__file__))
     fw = ivy.choose_random_backend(excluded=["numpy"]) if fw is None else fw
     ivy.set_backend(fw)
-    f = ivy.with_backend(backend=fw) if f is None else f
     sim = Simulator(interactive, try_use_sim)
     lr = 0.05
     num_anchors = 3
@@ -302,5 +301,4 @@ if __name__ == "__main__":
     )
     parsed_args = parser.parse_args()
     fw = parsed_args.backend
-    f = None if fw is None else ivy.with_backend(backend=fw)
-    main(not parsed_args.non_interactive, not parsed_args.no_sim, f, fw)
+    main(not parsed_args.non_interactive, not parsed_args.no_sim, fw)

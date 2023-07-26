@@ -419,4 +419,4 @@ if __name__ == "__main__":
     parsed_args = parser.parse_args()
     fw = parsed_args.backend
     f = None if fw is None else ivy.with_backend(backend=fw)
-    main(not parsed_args.non_interactive, f, fw)
+    main(not parsed_args.non_interactive, fw)
