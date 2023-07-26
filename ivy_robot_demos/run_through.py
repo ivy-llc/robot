@@ -147,7 +147,7 @@ def show_full_spline_path(
     plt.show()
 
 
-def main(interactive=True, f=None, fw=None):
+def main(interactive=True, fw=None):
     global INTERACTIVE
     INTERACTIVE = interactive
 
@@ -158,7 +158,6 @@ def main(interactive=True, f=None, fw=None):
 
     fw = ivy.choose_random_backend() if fw is None else fw
     ivy.set_backend(fw)
-    f = ivy.with_backend(backend=fw) if f is None else f
 
     # Spline Interpolation #
     # ---------------------#
@@ -418,5 +417,4 @@ if __name__ == "__main__":
     )
     parsed_args = parser.parse_args()
     fw = parsed_args.backend
-    f = None if fw is None else ivy.with_backend(backend=fw)
     main(not parsed_args.non_interactive, fw)
