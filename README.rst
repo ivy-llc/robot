@@ -1,8 +1,8 @@
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo.png?raw=true#gh-light-mode-only
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/logo.png?raw=true#gh-light-mode-only
    :width: 100%
    :class: only-light
 
-.. image:: https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
+.. image:: https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/logo_dark.png?raw=true#gh-dark-mode-only
    :width: 100%
    :class: only-dark
 
@@ -28,23 +28,23 @@
 .. raw:: html
 
     <div style="display: block;" align="center">
-        <img class="dark-light" width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
         <a href="https://jax.readthedocs.io">
-            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
+            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/jax_logo.png">
         </a>
-        <img class="dark-light" width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
         <a href="https://www.tensorflow.org">
-            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
+            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/tensorflow_logo.png">
         </a>
-        <img class="dark-light" width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
         <a href="https://pytorch.org">
-            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/pytorch_logo.png">
         </a>
-        <img class="dark-light" width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="12%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
         <a href="https://numpy.org">
-            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
+            <img class="dark-light" width="13%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/numpy_logo.png">
         </a>
-        <img class="dark-light" width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <img class="dark-light" width="6%" style="float: left;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/supported/empty.png">
     </div>
 
 Contents
@@ -79,26 +79,26 @@ neural memory, pre-trained models + implementations, and builder tools with trai
     <div style="display: block;">
         <a href="https://github.com/unifyai/mech">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_mech.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_mech_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_mech.png">
             </picture>
         </a>
         <a href="https://github.com/unifyai/vision">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_vision.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_vision_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_vision.png">
             </picture>
         </a>
         <a href="https://github.com/unifyai/robot">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_robot.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_robot_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_robot.png">
             </picture>
         </a>
         <a href="https://github.com/unifyai/gym">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_gym.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_gym_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_gym.png">
             </picture>
         </a>
 
@@ -136,26 +136,26 @@ neural memory, pre-trained models + implementations, and builder tools with trai
 
         <a href="https://github.com/unifyai/memory">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_memory.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_memory_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_memory.png">
             </picture>
         </a>
         <a href="https://github.com/unifyai/builder">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_builder.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_builder_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_builder.png">
             </picture>
         </a>
         <a href="https://github.com/unifyai/models">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_models.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_models_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_models.png">
             </picture>
         </a>
         <a href="https://github.com/unifyai/ecosystem">
             <picture>
-                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_ecosystem_dark.png">
-                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/master/img/externally_linked/logos/ivy_ecosystem.png">
+                <source class="dark-light" width="15%" style="float: left; margin: 0% 5%;" media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_ecosystem_dark.png">
+                <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://raw.githubusercontent.com/unifyai/unifyai.github.io/main/img/externally_linked/logos/ivy_ecosystem.png">
             </picture>
         </a>
 
@@ -195,8 +195,8 @@ neural memory, pre-trained models + implementations, and builder tools with trai
 
 Ivy robot can be installed like so: ``pip install ivy-robot``
 
-.. _demos: https://github.com/unifyai/robot/tree/master/ivy_robot_demos
-.. _interactive: https://github.com/unifyai/robot/tree/master/ivy_robot_demos/interactive
+.. _demos: https://github.com/unifyai/robot/tree/main/ivy_robot_demos
+.. _interactive: https://github.com/unifyai/robot/tree/main/ivy_robot_demos/interactive
 
 To quickly see the different aspects of the library, we suggest you check out the demos_!
 We suggest you start by running the script ``run_through.py``,
@@ -282,7 +282,7 @@ However, for simplicitly we fix the z translation and 3DOF rotation to zeros in 
 
 The interpolated xy positions and anchor positions from the path are shown below in the x-y plane.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/images/interpolated_drone_poses.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/main/docs/images/interpolated_drone_poses.png?raw=true
    :width: 100%
 
 **Rigid Mobile Class**
@@ -357,7 +357,7 @@ The sampled drone body xy positions during motion are shown below in the x-y pla
 By tracing the body points for each of the four corners of the drone,
 we can see how the drone performs the 180 degree self-rotation about the z-axis during the motion.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/images/sampled_drone_body_positions.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/main/docs/images/sampled_drone_body_positions.png?raw=true
    :width: 100%
 
 **Manipulator Class**
@@ -412,7 +412,7 @@ a forward reaching motion in the positive x direction.
 
 The interpolated joint angles are presented below.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/images/interpolated_manipulator_joint_angles.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/main/docs/images/interpolated_manipulator_joint_angles.png?raw=true
    :width: 100%
 
 In a similar fashion to how the drone body was sampled in the previous example,
@@ -430,7 +430,7 @@ we next use these interpolated joint angles to sample the link positions for the
 
 we show the sampled link positions during the course of the forward reaching motion in the x-y plane below.
 
-.. image:: https://github.com/unifyai/robot/blob/master/docs/images/sampled_manipulator_links.png?raw=true
+.. image:: https://github.com/unifyai/robot/blob/main/docs/images/sampled_manipulator_links.png?raw=true
    :width: 100%
 
 Interactive Demos
@@ -454,7 +454,7 @@ making use of functions ``ivy_robot.sample_spline_path`` and ``ivy_robot.RigidMo
 .. raw:: html
 
     <p align="center">
-        <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_a.gif?raw=true'>
+        <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/ivy_robot/demo_a.gif?raw=true'>
     </p>
 
 **Manipulator Planning**
@@ -466,7 +466,7 @@ making use of functions ``ivy_robot.sample_spline_path`` and ``ivy_robot.Manipul
 .. raw:: html
 
     <p align="center">
-        <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_b.gif?raw=true'>
+        <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/ivy_robot/demo_b.gif?raw=true'>
     </p>
 
 Get Involved

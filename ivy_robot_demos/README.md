@@ -83,7 +83,7 @@ cd ~/ivy_robot/ivy_robot_demos
 Example output from the simulator is given below:
 
 <p align="center">
-    <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_a.gif?raw=true'>
+    <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/ivy_robot/demo_a.gif?raw=true'>
 </p>
 
 ### Manipulator Spline Planning
@@ -100,7 +100,7 @@ cd ~/ivy_robot/ivy_robot_demos
 Example output from the simulator is given below:
 
 <p align="center">
-    <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/master/img/externally_linked/ivy_robot/demo_b.gif?raw=true'>
+    <img width="75%" style="display: block;" src='https://github.com/unifyai/unifyai.github.io/blob/main/img/externally_linked/ivy_robot/demo_b.gif?raw=true'>
 </p>
 
 ## Get Involved
