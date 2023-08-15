@@ -3,6 +3,6 @@ from docs.conf import html_theme_options
 
 html_theme_options["switcher"][
     "json_url"
-] = "https://lets-unify.ai/docs/versions/robot.json"
+] = "https://unify.ai/docs/versions/robot.json"
 
 repo_name = "robot"
