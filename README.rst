@@ -9,7 +9,7 @@
 .. raw:: html
 
     <br/>
-    <a href="https://pypi.org/project/ivy-robot">
+    <a href="https://pypi.org/project/ivy-robot/0.0.1.post0/">
         <img class="dark-light" style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://badge.fury.io/py/ivy-robot.svg">
     </a>
     <a href="https://github.com/unifyai/robot/actions?query=workflow%3Adocs">
@@ -104,13 +104,13 @@ neural memory, pre-trained models + implementations, and builder tools with trai
 
         <br clear="all" />
 
-        <a href="https://pypi.org/project/ivy-mech">
+        <a href="https://pypi.org/project/ivy-mech/0.0.1.post0/">
             <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://badge.fury.io/py/ivy-mech.svg">
         </a>
-        <a href="https://pypi.org/project/ivy-vision">
+        <a href="https://pypi.org/project/ivy-vision/0.0.1.post0/">
             <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://badge.fury.io/py/ivy-vision.svg">
         </a>
-        <a href="https://pypi.org/project/ivy-robot">
+        <a href="https://pypi.org/project/ivy-robot/0.0.1.post0/">
             <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://badge.fury.io/py/ivy-robot.svg">
         </a>
         <a href="https://pypi.org/project/ivy-gym">
@@ -161,10 +161,10 @@ neural memory, pre-trained models + implementations, and builder tools with trai
 
         <br clear="all" />
 
-        <a href="https://pypi.org/project/ivy-memory">
+        <a href="https://pypi.org/project/ivy-memory/0.0.1.post0/">
             <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://badge.fury.io/py/ivy-memory.svg">
         </a>
-        <a href="https://pypi.org/project/ivy-builder">
+        <a href="https://pypi.org/project/ivy-builder/0.0.1.post0/">
             <img class="dark-light" width="15%" style="float: left; margin: 0% 5%;" src="https://badge.fury.io/py/ivy-builder.svg">
         </a>
         <a href="https://pypi.org/project/ivy-models">
