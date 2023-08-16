@@ -193,7 +193,7 @@ neural memory, pre-trained models + implementations, and builder tools with trai
 
 **Quick Start**
 
-Ivy robot can be installed like so: ``pip install ivy-robot``
+Ivy robot can be installed like so: ``pip install ivy-robot==0.0.1.post0``
 
 .. _demos: https://github.com/unifyai/robot/tree/main/ivy_robot_demos
 .. _interactive: https://github.com/unifyai/robot/tree/main/ivy_robot_demos/interactive
