@@ -58,7 +58,7 @@ Contents
 Overview
 --------
 
-.. _docs: https://lets-unify.ai/robot
+.. _docs: https://unify.ai/docs/robot/
 
 **What is Ivy Robot?**
 
