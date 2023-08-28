@@ -1,3 +1,5 @@
+.. title:: Ivy Robot
+
 .. include:: ../README.rst
 
 .. autosummary::
